@@ -1,0 +1,151 @@
+<htx:layout none />
+<htx:data type="post" order="id desc" limit="50" as="allPosts" />
+<htx:data type="task" order="id" limit="9" as="tasks" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four Frameworks, One Representation</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    .fw-panel { border-radius: 12px; overflow: hidden; border: 1px solid #e5e5e5; background: #fff; }
+    .fw-label { padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+    .fw-body { min-height: 350px; }
+    .fw-body iframe { width: 100%; height: 350px; border: none; }
+    .badge { font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 100px; font-weight: 600; }
+    .b-vue { background: #dcfce7; color: #166534; }
+    .b-svelte { background: #ff3e00; color: #fff; }
+    .b-react { background: #dbeafe; color: #1e40af; }
+    .b-astro { background: #fef3c7; color: #92400e; }
+    .b-l0 { background: #dcfce7; color: #166534; }
+    .l-vue { border-bottom: 2px solid #22c55e; background: #f0fdf4; }
+    .l-svelte { border-bottom: 2px solid #ff3e00; background: #fff5f5; }
+    .l-react { border-bottom: 2px solid #3b82f6; background: #eff6ff; }
+    .l-astro { border-bottom: 2px solid #f59e0b; background: #fefce8; }
+    .surface { padding: 1rem; background: #f0fdf4; border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1 style="font-size:2rem;margin-bottom:0.25rem">Four Frameworks, One Representation</h1>
+  <p style="color:#888;margin-bottom:0.5rem">Vue, Svelte, React, and Astro — each in a bounded region of the same PRESTO page.</p>
+  <p style="font-size:0.85rem;margin-bottom:1.5rem">
+    <a href="/showcase">&larr; Showcase</a> &middot;
+    <a href="/encapsulation/splitscreen">React + Astro split</a> &middot;
+    <a href="/encapsulation/showcase">Island showcase</a>
+  </p>
+
+  <!-- PRESTO Surface -->
+  <div class="surface">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <span class="badge b-l0">PRESTO Layer 0</span>
+        <strong style="margin-left:0.5rem">The REST Boundary</strong>
+      </div>
+      <div style="font-size:0.8rem;color:#888">
+        <htx:v>allPosts | length</htx:v> posts &middot; <htx:v>tasks | length</htx:v> tasks &middot;
+        <htx:auth><htx:v>auth.user.name</htx:v></htx:auth><htx:unauth>Guest</htx:unauth>
+        &middot; Server-rendered, zero JS
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin:0.5rem 0 0">This bar, the heading, and the footer are server-rendered HTML from the PRESTO engine. The four panels below are each a different framework operating in a bounded region. All enclosed within one HTTP response.</p>
+  </div>
+
+  <!-- Four framework panels -->
+  <div class="grid4">
+
+    <!-- Vue 3 Dashboard -->
+    <div class="fw-panel">
+      <div class="fw-label l-vue">
+        <div><span class="badge b-vue">Vue 3</span> Dashboard</div>
+        <div style="font-size:0.6rem;color:#888">93 KB &middot; Composition API</div>
+      </div>
+      <div class="fw-body">
+        <template id="island-data-vue-dashboard"><htx:v raw>allPosts | json</htx:v></template>
+        <htx:component src="/ui/island.htx" name="vue-dashboard">
+          <div style="padding:2rem;text-align:center;color:#888">Loading Vue 3...</div>
+        </htx:component>
+      </div>
+    </div>
+
+    <!-- Svelte-style Form -->
+    <div class="fw-panel">
+      <div class="fw-label l-svelte">
+        <div><span class="badge b-svelte">Svelte-style</span> Contact Form</div>
+        <div style="font-size:0.6rem;color:#888">4 KB &middot; Reactive primitives</div>
+      </div>
+      <div class="fw-body">
+        <htx:component src="/ui/island.htx" name="svelte-form">
+          <div style="padding:2rem;text-align:center;color:#888">Loading form...</div>
+        </htx:component>
+      </div>
+    </div>
+
+    <!-- React Three Fiber 3D -->
+    <div class="fw-panel">
+      <div class="fw-label l-react">
+        <div><span class="badge b-react">React 19</span> Three.js 3D Scene</div>
+        <div style="font-size:0.6rem;color:#888">1,390 KB &middot; WebGL / GPU</div>
+      </div>
+      <div class="fw-body">
+        <htx:component src="/ui/island.htx" name="three-scene">
+          <div style="padding:2rem;text-align:center;color:#888;background:#0a0a0f;height:350px;display:flex;align-items:center;justify-content:center;color:#444">Loading 3D...</div>
+        </htx:component>
+      </div>
+    </div>
+
+    <!-- Astro Static HTML -->
+    <div class="fw-panel">
+      <div class="fw-label l-astro">
+        <div><span class="badge b-astro">Astro 6</span> Static Content</div>
+        <div style="font-size:0.6rem;color:#888">0 KB JS &middot; Build-time compiled</div>
+      </div>
+      <div class="fw-body">
+        <iframe src="/astro/index.html" title="Astro content" style="height:350px"></iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Summary table -->
+  <div style="padding:1.5rem;background:#fff;border:1px solid #e5e5e5;border-radius:12px;margin-top:0.5rem">
+    <h3 style="margin-top:0">Five Architectural Styles in One Response</h3>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin:1rem 0">
+      <thead>
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <th style="text-align:left;padding:0.4rem 0">Region</th>
+          <th style="text-align:left">Framework</th>
+          <th style="text-align:left">Style</th>
+          <th style="text-align:left">Bundle</th>
+          <th style="text-align:left">Rendering</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Surface</td><td>PRESTO</td><td>REST</td><td>0 KB</td><td>Engine pipeline (request time)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td>Top left</td><td>Vue 3</td><td>MVVM / Reactive</td><td>93 KB</td><td>Client-side (Composition API)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td>Top right</td><td>Svelte-style</td><td>Reactive / Compiled</td><td>4 KB</td><td>Client-side (reactive primitives)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td>Bottom left</td><td>React + Three.js</td><td>DO + WebGL</td><td>1,390 KB</td><td>Client-side (virtual DOM + GPU)</td></tr>
+        <tr><td>Bottom right</td><td>Astro</td><td>Static / Compiled</td><td>0 KB</td><td>Astro compiler (build time)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.85rem;color:#666">Total JavaScript on this page: <strong>1,487 KB</strong> across 3 islands. The Vue dashboard and Svelte form share no code with the React 3D scene. Each island is independently bundled. Each framework operates within its bounded region using its own constraints. The PRESTO surface provides the properties they cannot: cacheability, server authority, complete initial HTML, universal accessibility.</p>
+
+    <h3>What This Proves</h3>
+    <p style="font-size:0.85rem;color:#666">Section 4.9.5 of the white paper states: <em>"Any client-side architectural style — Model-View-ViewModel, Entity-Component-System, the actor model, a dataflow architecture — can be encapsulated within a REST representation."</em></p>
+    <p style="font-size:0.85rem;color:#666">This page is that statement rendered as an HTTP response. Vue's MVVM style, Svelte's compiled reactive style, React's distributed objects style, and Astro's static compilation style — all enclosed within a single REST representation, each at its correct depth, each using the same <code>defineIsland()</code> protocol.</p>
+    <p style="font-size:0.85rem;color:#666">The REST representation is the universal carrier. The <code>htx:</code> namespace is the server's territory. Everything else is the client's territory. The bilateral boundary holds regardless of what operates on the client side — because the server resolved its half before the client ever saw the document.</p>
+  </div>
+
+  <div style="text-align:center;padding:1.5rem;color:#888;font-size:0.8rem;margin-top:1rem">
+    PRESTO/TS v3 &middot; Seed v7 &middot; 22/22 conformant &middot; Raspberry Pi &middot;
+    <a href="https://github.com/hypermediacms/presto-ts" style="color:#888">GitHub</a>
+  </div>
+
+</div>
+</body>
+</html>

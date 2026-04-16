@@ -1,0 +1,9 @@
+<!-- Layer 0: Pure HTML. No data. No scripts. The simplest possible page.
+     This is what REST looks like: a complete document, sent in full. -->
+
+<section class="app-section" style="max-width:600px">
+  <h1>About</h1>
+  <p>This application is built with <strong>Hypermedia App</strong>, a framework for the PRESTO architectural style.</p>
+  <p>PRESTO formalizes code-on-demand as a progressive spectrum. Each page chooses its own layer of client capability — from pure HTML (Layer 0) to WebAssembly (Layer 6).</p>
+  <p>This page is Layer 0. It has no JavaScript. The server sent complete HTML. Your browser rendered it. That's it.</p>
+</section>

@@ -1,0 +1,16 @@
+<htx:props>
+text = ""
+label = "Copy"
+copied = "Copied!"
+</htx:props>
+<button class="ui-btn ui-btn-outline ui-btn-sm ui-copy-btn" data-text="{{ text }}" data-label="{{ label }}" data-copied="{{ copied }}">{{ label }}</button>
+<htx:script>
+  var btn = el.querySelector('.ui-copy-btn');
+  btn.addEventListener('click', function() {
+    navigator.clipboard.writeText(btn.dataset.text).then(function() {
+      var orig = btn.textContent;
+      btn.textContent = btn.dataset.copied;
+      setTimeout(function() { btn.textContent = btn.dataset.label; }, 2000);
+    });
+  });
+</htx:script>

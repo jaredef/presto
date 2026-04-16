@@ -1,0 +1,4 @@
+<htx:props>
+variant = "default"
+</htx:props>
+<span class="ui-badge ui-badge-{{ variant }}"><htx:slot /></span>

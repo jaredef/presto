@@ -1,0 +1,107 @@
+export function generateAppCss(): string {
+  return `/* App styles — customize your application theme here */
+
+:root {
+  --app-max-width: 900px;
+  --app-header-bg: #fff;
+  --app-footer-bg: #fafafa;
+}
+
+body {
+  font-family: var(--ui-font, system-ui, sans-serif);
+  color: var(--ui-text, #09090b);
+  background: var(--ui-bg, #ffffff);
+  margin: 0;
+  line-height: 1.6;
+}
+
+a { color: var(--ui-primary, #18181b); }
+
+/* Header */
+.app-header {
+  border-bottom: 1px solid var(--ui-border, #e4e4e7);
+  background: var(--app-header-bg);
+}
+.app-nav {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.app-logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--ui-text);
+}
+.app-nav-links {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+.app-nav-links a {
+  color: var(--ui-text-muted, #71717a);
+  text-decoration: none;
+}
+.app-nav-links a:hover { color: var(--ui-text); }
+
+/* Main */
+.app-main {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Hero */
+.app-hero {
+  text-align: center;
+  padding: 3rem 0;
+}
+.app-hero h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+.app-hero p {
+  color: var(--ui-text-muted);
+  font-size: 1.05rem;
+  margin: 0.25rem 0;
+}
+.app-subtitle { font-size: 0.9rem !important; }
+
+/* Sections */
+.app-section {
+  margin-bottom: 2.5rem;
+}
+.app-section h1, .app-section h2 {
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+/* Grid */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--ui-text-muted);
+  border-top: 1px solid var(--ui-border, #e4e4e7);
+  background: var(--app-footer-bg);
+}
+.app-footer a { color: var(--ui-text-muted); }
+
+@media (max-width: 640px) {
+  .app-hero h1 { font-size: 1.75rem; }
+  .app-grid { grid-template-columns: 1fr; }
+}
+`;
+}

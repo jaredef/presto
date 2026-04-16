@@ -1,0 +1,156 @@
+<htx:layout none />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<htx:data type="task" order="id" limit="9" as="tasks" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Island Showcase — 5 React Packages, 1 Protocol</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .showcase { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .island-section { margin-bottom: 3rem; }
+    .island-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem; }
+    .island-header h2 { margin: 0; font-size: 1.25rem; }
+    .island-badge { font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 100px; background: #dbeafe; color: #1e40af; font-weight: 600; }
+    .island-size { font-size: 0.75rem; color: #888; font-family: monospace; }
+    .island-desc { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+    .island-panel { border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; background: #fff; }
+    .island-panel-body { padding: 1rem; }
+    .island-meta { padding: 0.5rem 1rem; background: #f8f8fa; font-size: 0.75rem; color: #888; border-top: 1px solid #e5e5e5; }
+    .surface-note { padding: 0.75rem 1rem; background: #f0fdf4; border-radius: 8px; font-size: 0.8rem; color: #166534; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+<div class="showcase">
+
+  <h1>Island Showcase</h1>
+  <p style="color:#888;margin-bottom:0.5rem">Five React npm packages. One standard protocol. Each mounted via <code>defineIsland()</code> + <code>island.htx</code>.</p>
+  <p style="font-size:0.85rem;margin-bottom:2rem">
+    <a href="/encapsulation/react-query">React Query proof</a> &middot;
+    <a href="/encapsulation/recharts">Recharts proof</a> &middot;
+    <a href="/layer5">&larr; Layer 5 First</a>
+  </p>
+
+  <div class="surface-note">
+    <strong>This page is Layer 0.</strong> All text you see before the islands load is server-rendered HTML. Zero JavaScript. The islands mount into bounded regions after the page is complete. If JavaScript is disabled, you still see the fallback content and the server-rendered data.
+  </div>
+
+  <!-- 1. TipTap Rich Text Editor -->
+  <div class="island-section">
+    <div class="island-header">
+      <h2>1. TipTap — Rich Text Editing</h2>
+      <div><span class="island-badge">Layer 5</span> <span class="island-size">763 KB</span></div>
+    </div>
+    <p class="island-desc">The server renders the content as static HTML below. The island provides editing with bold, italic, headings, lists, and undo/redo.</p>
+    <div class="island-panel">
+      <div class="island-panel-body">
+        <template id="island-data-tiptap-editor"><htx:v raw>posts | json</htx:v></template>
+        <htx:component src="/ui/island.htx" name="tiptap-editor">
+          <div style="padding:1rem;color:#888">Loading TipTap editor...</div>
+        </htx:component>
+      </div>
+      <div class="island-meta">@tiptap/react + @tiptap/starter-kit + ProseMirror. Server provided content via data bridge.</div>
+    </div>
+  </div>
+
+  <!-- 2. Leaflet Map -->
+  <div class="island-section">
+    <div class="island-header">
+      <h2>2. Leaflet — Interactive Map</h2>
+      <div><span class="island-badge">Layer 5</span> <span class="island-size">538 KB</span></div>
+    </div>
+    <p class="island-desc">Server provides coordinates. The island renders an interactive map with markers and popups. Drag, zoom, click markers.</p>
+    <div class="island-panel">
+      <div class="island-panel-body">
+        <template id="island-data-leaflet-map">{"center":[37.7749,-122.4194],"zoom":12,"markers":[{"lat":37.7749,"lng":-122.4194,"label":"San Francisco"},{"lat":37.8044,"lng":-122.2712,"label":"Oakland"},{"lat":37.8716,"lng":-122.2727,"label":"Berkeley"},{"lat":37.5585,"lng":-122.2711,"label":"San Mateo"}]}</template>
+        <htx:component src="/ui/island.htx" name="leaflet-map">
+          <div style="padding:2rem;text-align:center;color:#888;background:#f0f0f0;border-radius:8px;height:400px;display:flex;align-items:center;justify-content:center">Loading map...</div>
+        </htx:component>
+      </div>
+      <div class="island-meta">react-leaflet + Leaflet + OpenStreetMap tiles. Coordinates provided by the server.</div>
+    </div>
+  </div>
+
+  <!-- 3. CodeMirror Code Editor -->
+  <div class="island-section">
+    <div class="island-header">
+      <h2>3. CodeMirror — Code Editor</h2>
+      <div><span class="island-badge">Layer 5</span> <span class="island-size">894 KB</span></div>
+    </div>
+    <p class="island-desc">Server provides initial code. The island provides editing with syntax highlighting, line numbers, and autocomplete.</p>
+    <div class="island-panel">
+      <div class="island-panel-body">
+        <template id="island-data-codemirror-editor">{"code":"// This code was provided by the server\\n// via the data bridge (htx:v raw | json)\\n\\nimport { defineIsland } from \\"presto-ts/islands\\";\\n\\ndefineIsland({\\n  name: \\"my-island\\",\\n  mount(el, props) {\\n    // Your React component here\\n    console.log(\\"Mounted with\\", props.data);\\n  },\\n});\\n","language":"typescript"}</template>
+        <htx:component src="/ui/island.htx" name="codemirror-editor">
+          <div style="padding:1rem;color:#888;background:#1e1e2e;border-radius:8px;font-family:monospace;font-size:0.85rem;min-height:300px">Loading editor...</div>
+        </htx:component>
+      </div>
+      <div class="island-meta">@uiw/react-codemirror + @codemirror/lang-javascript. Dark theme with TypeScript highlighting.</div>
+    </div>
+  </div>
+
+  <!-- 4. React Three Fiber 3D Scene -->
+  <div class="island-section">
+    <div class="island-header">
+      <h2>4. React Three Fiber — 3D Scene</h2>
+      <div><span class="island-badge">Layer 5</span> <span class="island-size">1,390 KB</span></div>
+    </div>
+    <p class="island-desc">WebGL rendering in a bounded div. A rotating torus knot with distortion material. Drag to orbit. The maximum distance from the surface.</p>
+    <div class="island-panel">
+      <div class="island-panel-body">
+        <htx:component src="/ui/island.htx" name="three-scene">
+          <div style="padding:2rem;text-align:center;color:#888;background:#0a0a0f;border-radius:8px;height:400px;display:flex;align-items:center;justify-content:center;color:#444">Loading 3D scene...</div>
+        </htx:component>
+      </div>
+      <div class="island-meta">@react-three/fiber + @react-three/drei + Three.js. WebGL + GPU shaders in a bounded PRESTO island.</div>
+    </div>
+  </div>
+
+  <!-- 5. dnd-kit Sortable List -->
+  <div class="island-section">
+    <div class="island-header">
+      <h2>5. dnd-kit — Sortable List</h2>
+      <div><span class="island-badge">Layer 5</span> <span class="island-size">429 KB</span></div>
+    </div>
+    <p class="island-desc">Server provides items from SQLite. The island provides drag-and-drop reordering with smooth animations.</p>
+    <div class="island-panel">
+      <div class="island-panel-body">
+        <template id="island-data-dndkit-sortable"><htx:v raw>tasks | json</htx:v></template>
+        <htx:component src="/ui/island.htx" name="dndkit-sortable">
+          <div style="padding:1rem;color:#888">Loading sortable list...</div>
+        </htx:component>
+      </div>
+      <div class="island-meta">@dnd-kit/core + @dnd-kit/sortable. {tasks.length} items from SQLite via data bridge.</div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div style="padding:1.5rem;background:#fff;border:1px solid #e5e5e5;border-radius:12px;margin-top:2rem">
+    <h3 style="margin-top:0">Five Packages, One Protocol</h3>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse">
+      <thead>
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <th style="text-align:left;padding:0.4rem 0">Package</th>
+          <th style="text-align:left">Domain</th>
+          <th style="text-align:left">Bundle</th>
+          <th style="text-align:left">Data Bridge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">TipTap</td><td>Rich text</td><td>763 KB</td><td>Embedded JSON (post content)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Leaflet</td><td>Maps</td><td>538 KB</td><td>Embedded JSON (coordinates)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">CodeMirror</td><td>Code editing</td><td>894 KB</td><td>Embedded JSON (source code)</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">React Three Fiber</td><td>3D / WebGL</td><td>1,390 KB</td><td>None (scene defined in component)</td></tr>
+        <tr><td style="padding:0.4rem 0">dnd-kit</td><td>Drag & drop</td><td>429 KB</td><td>Embedded JSON (tasks from SQLite)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.85rem;color:#666;margin-top:1rem">Each island uses the same <code>defineIsland()</code> SDK, the same <code>island.htx</code> component, the same <code>build-islands</code> CLI command. The surrounding page is Layer 0: server-rendered HTML, zero JavaScript, complete when it arrives. The islands mount into bounded regions. The REST boundary holds.</p>
+  </div>
+
+</div>
+</body>
+</html>

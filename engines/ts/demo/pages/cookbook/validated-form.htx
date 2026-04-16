@@ -1,0 +1,95 @@
+<!-- WADING DEPTH (Layer 2): Client-validated form with optimistic submit.
+     Replaces: React Hook Form + Zod + useMutation + optimistic UI.
+     Server renders form + signs token. Script validates + submits. -->
+
+<h1>Validated Form</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Client validation + optimistic submit. Replaces React Hook Form + Zod.</p>
+
+<htx:action name="create" type="post" />
+<div style="max-width:600px">
+  <form id="validated-form" method="post" class="ui-form">
+    <input type="hidden" name="_action_token" value="{htx:$actions.create}" />
+    <div class="ui-field">
+      <label class="ui-label">Title <span style="color:var(--ui-destructive)">*</span></label>
+      <input type="text" name="title" class="ui-input" required data-validate="required|min:3" />
+      <span class="field-error" style="font-size:0.75rem;color:var(--ui-destructive);display:none"></span>
+    </div>
+    <div class="ui-field">
+      <label class="ui-label">Slug <span style="color:var(--ui-destructive)">*</span></label>
+      <input type="text" name="slug" class="ui-input" required data-validate="required|slug" placeholder="url-safe-slug" />
+      <span class="field-error" style="font-size:0.75rem;color:var(--ui-destructive);display:none"></span>
+    </div>
+    <div class="ui-field">
+      <label class="ui-label">Body</label>
+      <textarea name="body" class="ui-textarea" rows="4" data-validate="min:10" placeholder="At least 10 characters..."></textarea>
+      <span class="field-error" style="font-size:0.75rem;color:var(--ui-destructive);display:none"></span>
+    </div>
+    <input type="hidden" name="status" value="published" />
+    <div class="ui-form-actions">
+      <span id="form-status" style="font-size:0.8rem;color:var(--ui-text-muted)"></span>
+      <button type="submit" class="ui-btn ui-btn-default ui-btn-md" id="submit-btn">Create Post</button>
+    </div>
+  </form>
+</div>
+
+<script>
+(function() {
+  var form = document.getElementById('validated-form');
+  var statusEl = document.getElementById('form-status');
+  var submitBtn = document.getElementById('submit-btn');
+
+  var validators = {
+    required: function(v) { return v.trim() ? null : 'Required'; },
+    'min:3': function(v) { return v.length >= 3 ? null : 'At least 3 characters'; },
+    'min:10': function(v) { return !v || v.length >= 10 ? null : 'At least 10 characters'; },
+    slug: function(v) { return /^[a-z0-9-]+$/.test(v) ? null : 'Only lowercase letters, numbers, hyphens'; },
+  };
+
+  function validate(input) {
+    var rules = (input.dataset.validate || '').split('|').filter(Boolean);
+    var error = input.closest('.ui-field').querySelector('.field-error');
+    for (var i = 0; i < rules.length; i++) {
+      var fn = validators[rules[i]];
+      if (fn) {
+        var msg = fn(input.value);
+        if (msg) { error.textContent = msg; error.style.display = ''; input.style.borderColor = 'var(--ui-destructive)'; return false; }
+      }
+    }
+    error.style.display = 'none'; input.style.borderColor = '';
+    return true;
+  }
+
+  form.querySelectorAll('[data-validate]').forEach(function(input) {
+    input.addEventListener('blur', function() { validate(this); });
+    input.addEventListener('input', function() { if (this.style.borderColor) validate(this); });
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var inputs = form.querySelectorAll('[data-validate]');
+    var allValid = true;
+    inputs.forEach(function(input) { if (!validate(input)) allValid = false; });
+    if (!allValid) return;
+
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Saving...';
+    var data = Object.fromEntries(new FormData(form));
+    fetch(location.pathname, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) { statusEl.textContent = 'Created!'; statusEl.style.color = 'var(--ui-success)'; }
+      else { statusEl.textContent = d.error || 'Failed'; submitBtn.disabled = false; }
+    })
+    .catch(function() { statusEl.textContent = 'Error'; submitBtn.disabled = false; });
+  });
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> const form = useForm({ resolver: zodResolver(schema) }); plus useMutation, optimistic update, error handling, field-level validation, submit state management. Here: a script validates fields on blur, prevents submission on invalid, and POSTs with the server-signed action token.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

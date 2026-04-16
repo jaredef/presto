@@ -1,0 +1,8 @@
+<htx:props>
+variant = "info"
+title = ""
+</htx:props>
+<div class="ui-alert ui-alert-{{ variant }}" role="alert">
+  <div class="ui-alert-title">{{ title }}</div>
+  <div class="ui-alert-body"><htx:slot /></div>
+</div>

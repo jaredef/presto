@@ -1,0 +1,77 @@
+<h1>Escape 2: Forms Don't Need JavaScript</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Your app manages form state in React. The escape: a signed token and a native form.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3 style="color:var(--ui-destructive)">At Depth (Layer 5)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>const form = useForm({
+  resolver: zodResolver(postSchema)
+});
+
+const mutation = useMutation({
+  mutationFn: (data) =>
+    fetch('/api/posts', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+  onSuccess: () => router.push('/posts'),
+  onError: (e) => toast.error(e.message),
+});
+
+return (
+  &lt;form onSubmit={form.handleSubmit(
+    data => mutation.mutate(data)
+  )}&gt;
+    &lt;Input {...form.register('title')} /&gt;
+    {form.errors.title?.message}
+    &lt;Button disabled={mutation.isPending}&gt;
+      {mutation.isPending ? 'Saving...' : 'Create'}
+    &lt;/Button&gt;
+  &lt;/form&gt;
+);</code></pre>
+    <p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">Requires: useForm + zodResolver + useMutation + router + toast + error display + loading state.</p>
+  </div>
+
+  <div>
+    <h3 style="color:var(--ui-success)">Surfaced (Layer 0)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>&lt;htx:component src="/ui/form.htx"
+  action="create" type="post"&gt;
+
+  &lt;htx:component src="/ui/input.htx"
+    label="Title" name="title"
+    required="required" /&gt;
+
+  &lt;htx:component src="/ui/textarea.htx"
+    label="Body" name="body" /&gt;
+
+&lt;/htx:component&gt;
+
+&lt;!-- The engine signs an HMAC token.
+     The form submits via POST.
+     The server verifies and creates.
+     Zero JavaScript. --&gt;</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">What dissolved</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.85rem">
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">React Hook Form</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Zod schema validation</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">useMutation + onSuccess/onError</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">API route handler</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Loading/pending state</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Toast notifications library</div>
+</div>
+
+<h3 style="margin-top:2rem">Live: The surfaced form</h3>
+<div style="max-width:500px">
+  <htx:component src="/ui/form.htx" action="create" type="post">
+    <htx:component src="/ui/input.htx" label="Title" name="title" required="required" placeholder="Post title" />
+    <htx:component src="/ui/input.htx" label="Slug" name="slug" required="required" placeholder="url-slug" />
+    <htx:component src="/ui/textarea.htx" label="Body" name="body" rows="3" />
+    <input type="hidden" name="status" value="published" />
+  </htx:component>
+</div>
+<p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">Inspect the hidden field — the HMAC-SHA256 action token is real. Submit it — it creates a record in SQLite.</p>
+
+<p style="margin-top:1.5rem"><a href="/layer5">&larr; Back to Layer 5 First</a></p>

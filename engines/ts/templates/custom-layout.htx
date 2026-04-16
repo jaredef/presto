@@ -1,0 +1,2 @@
+<htx:layout src="layouts/minimal.htx" />
+<h1>Custom Layout</h1>

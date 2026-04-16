@@ -1,0 +1,37 @@
+<h1>ISR → Layer 0 + HTTP Cache Semantics</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Incremental Static Regeneration is a compensation for a compensation for a compensation.</p>
+
+<htx:component src="/ui/alert.htx" variant="info" title="The Compensation Chain">
+  SSR compensates for missing representations → SSG compensates for SSR performance → ISR compensates for SSG staleness. Three layers of compensation for a property HTTP provides natively.
+</htx:component>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
+  <div>
+    <h3>React (Next.js ISR)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>export async function getStaticProps() {
+  const posts = await fetchPosts();
+  return {
+    props: { posts },
+    revalidate: 60, // seconds
+  };
+}
+// Also needs: on-demand revalidation API,
+// cache invalidation strategy,
+// reasoning about stale content windows</code></pre>
+  </div>
+  <div>
+    <h3>PRESTO (standard HTTP)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>Cache-Control: public,
+  max-age=60,
+  stale-while-revalidate=300
+
+// That's it. Standard HTTP.
+// Any CDN or reverse proxy handles this.
+// The template is unchanged.
+// No revalidation API.
+// No on-demand cache busting endpoint.
+// HTTP has done this since 1999 (RFC 2616).</code></pre>
+  </div>
+</div>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

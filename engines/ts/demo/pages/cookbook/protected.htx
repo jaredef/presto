@@ -1,0 +1,35 @@
+<!-- SURFACE (Layer 0): Auth-gated pages. Zero JavaScript.
+     Replaces: NextAuth + route guards + ProtectedRoute wrapper + useSession.
+     Security through absence: unauthenticated users never receive the content. -->
+
+<h1>Auth-Gated Pages</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Role-based rendering. The unauthorized content is never sent.</p>
+
+<htx:auth>
+  <htx:component src="/ui/alert.htx" variant="success" title="Authenticated">
+    Welcome, <htx:v>auth.user.name</htx:v>. You have the <strong><htx:v>auth.user.role</htx:v></strong> role.
+  </htx:component>
+
+  <h3 style="margin-top:1.5rem">User Content</h3>
+  <p>This content is visible to all authenticated users. It was rendered on the server because you have a valid session. An unauthenticated user never receives this HTML.</p>
+
+  <htx:auth role="admin">
+    <h3 style="margin-top:1.5rem">Admin Content</h3>
+    <htx:component src="/ui/alert.htx" variant="warning" title="Admin Only">
+      This section is visible only to users with the admin role. View the page source — if you're not an admin, this HTML does not exist in the response. There is no hidden div. There is no client-side route guard. The template simply didn't render this block.
+    </htx:component>
+  </htx:auth>
+</htx:auth>
+
+<htx:unauth>
+  <htx:component src="/ui/alert.htx" variant="info" title="Not Authenticated">
+    You are viewing the public version of this page. The authenticated content was never rendered — it does not exist in this response.
+  </htx:component>
+  <p style="margin-top:1rem">To test authentication, set a session cookie. The auth module reads HMAC-signed tokens from the <code>htx_session</code> cookie.</p>
+
+  <div style="margin-top:1.5rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+    <strong>What this replaces:</strong> NextAuth provider + useSession() hook + ProtectedRoute wrapper + client-side redirects + route guards in middleware. Here: htx:auth checks the session during template resolution. Unauthenticated? The block doesn't render. No client-side guard. No flash of protected content. The capability was never provided.
+  </div>
+</htx:unauth>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

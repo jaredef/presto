@@ -1,0 +1,4 @@
+body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+nav { padding: 10px 0; border-bottom: 1px solid #ccc; margin-bottom: 20px; }
+article { border: 1px solid #eee; padding: 16px; margin-bottom: 16px; }
+footer { margin-top: 40px; color: #666; }

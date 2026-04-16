@@ -1,0 +1,11 @@
+<htx:props>
+label = ""
+name = ""
+placeholder = ""
+rows = "4"
+required = ""
+</htx:props>
+<div class="ui-field">
+  <label class="ui-label">{{ label }}</label>
+  <textarea name="{{ name }}" placeholder="{{ placeholder }}" rows="{{ rows }}" class="ui-textarea" {{ required }}></textarea>
+</div>

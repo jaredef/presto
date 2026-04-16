@@ -1,0 +1,19 @@
+<htx:props>
+trigger = "Info"
+position = "bottom"
+</htx:props>
+<div class="ui-popover-root">
+  <button class="ui-btn ui-btn-ghost ui-btn-sm ui-popover-trigger">{{ trigger }}</button>
+  <div class="ui-popover ui-popover-{{ position }}" style="display:none">
+    <htx:slot />
+  </div>
+</div>
+<htx:script>
+  var btn = el.querySelector('.ui-popover-trigger');
+  var pop = el.querySelector('.ui-popover');
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    pop.style.display = pop.style.display === 'none' ? '' : 'none';
+  });
+  document.addEventListener('click', function(e) { if (!el.contains(e.target)) pop.style.display = 'none'; });
+</htx:script>

@@ -1,0 +1,21 @@
+<htx:props>
+label = ""
+name = ""
+checked = ""
+</htx:props>
+<label class="ui-switch">
+  <input type="checkbox" name="{{ name }}" class="ui-switch-input" />
+  <span class="ui-switch-track"><span class="ui-switch-thumb"></span></span>
+  <span class="ui-switch-label">{{ label }}</span>
+</label>
+<htx:script>
+  var input = el.querySelector('.ui-switch-input');
+  if ('{{ checked }}' === 'true') input.checked = true;
+  var track = el.querySelector('.ui-switch-track');
+  function update() { track.classList.toggle('checked', input.checked); }
+  input.addEventListener('change', function() {
+    update();
+    el.dispatchEvent(new CustomEvent('switch', { detail: { checked: input.checked }, bubbles: true }));
+  });
+  update();
+</htx:script>

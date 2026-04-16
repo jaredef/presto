@@ -1,0 +1,29 @@
+<htx:props>
+multiple = "false"
+</htx:props>
+<div class="ui-accordion" data-multiple="{{ multiple }}">
+  <htx:slot />
+</div>
+<htx:script>
+  var multi = el.dataset.multiple === 'true';
+  var items = el.querySelectorAll('.ui-accordion-item');
+  items.forEach(function(item) {
+    var trigger = item.querySelector('.ui-accordion-trigger');
+    var content = item.querySelector('.ui-accordion-content');
+    if (trigger && content) {
+      content.style.display = 'none';
+      trigger.addEventListener('click', function() {
+        var isOpen = content.style.display !== 'none';
+        if (!multi) {
+          items.forEach(function(other) {
+            var c = other.querySelector('.ui-accordion-content');
+            if (c) c.style.display = 'none';
+            other.classList.remove('open');
+          });
+        }
+        content.style.display = isOpen ? 'none' : '';
+        item.classList.toggle('open', !isOpen);
+      });
+    }
+  });
+</htx:script>

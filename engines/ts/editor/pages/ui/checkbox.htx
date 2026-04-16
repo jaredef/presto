@@ -1,0 +1,11 @@
+<htx:props>
+label = ""
+name = ""
+value = ""
+checked = ""
+</htx:props>
+<label class="ui-checkbox">
+  <input type="checkbox" name="{{ name }}" value="{{ value }}" {{ checked }} />
+  <span class="ui-checkbox-mark"></span>
+  <span class="ui-checkbox-label">{{ label }}</span>
+</label>

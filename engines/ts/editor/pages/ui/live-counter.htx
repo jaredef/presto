@@ -1,0 +1,22 @@
+<htx:props>
+module = "counter"
+label = ""
+initial = "0"
+</htx:props>
+<div class="ui-live-counter" data-module="{{ module }}">
+  <htx:grant type="channel" module="{{ module }}" as="counter_token" />
+  <span class="ui-live-counter-value">{{ initial }}</span>
+  <span class="ui-live-counter-label">{{ label }}</span>
+  <input type="hidden" class="ui-token" value="{htx:counter_token}" />
+</div>
+<htx:script>
+  var valueEl = el.querySelector('.ui-live-counter-value');
+  var token = el.querySelector('.ui-token').value;
+  var mod = el.dataset.module;
+  if (token && typeof signal === 'function' && typeof channel === 'function') {
+    var count = signal(parseInt(valueEl.textContent) || 0);
+    bind(valueEl, count);
+    var ch = channel('wss://' + location.host + '/api/channel/' + mod, token);
+    ch.on('count', function(data) { count.value = data.value || data; });
+  }
+</htx:script>

@@ -1,0 +1,64 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+<htx:let pageTitle="Server Components" />
+
+<h1>RSC → Layer 0 (Every Template)</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">React Server Components recover a property server-rendered architectures never lost.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>React Server Components</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// app/posts/page.tsx (Server Component)
+import { db } from '@/lib/db';
+
+// Server component — can access DB directly
+async function PostList() {
+  const posts = await db.query(...);
+  return posts.map(p =&gt; &lt;Card&gt;{p.title}&lt;/Card&gt;);
+}
+
+// But if you need state or effects:
+'use client'; // ← partition the model
+function LikeButton({ postId }) {
+  const [liked, setLiked] = useState(false);
+  // Now you can't access DB directly
+  // Serialization rules apply at boundary
+}</code></pre>
+    <htx:component src="/ui/alert.htx" variant="warning" title="Complexity">
+      Component model partitioned into two categories. "use client" directives. Serialization boundaries. The developer classifies every component.
+    </htx:component>
+  </div>
+  <div>
+    <h3>PRESTO (Layer 0)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;!-- pages/posts.htx --&gt;
+&lt;!-- Direct data access. No directive needed. --&gt;
+&lt;htx:data type="post"
+  where="status = 'published'"
+  as="posts" /&gt;
+
+&lt;htx:let pageTitle="Server Components" /&gt;
+&lt;h1&gt;&lt;htx:v&gt;pageTitle&lt;/htx:v&gt;&lt;/h1&gt;
+
+&lt;htx:each items="posts" as="post"&gt;
+  &lt;htx:component src="/ui/card.htx"
+    title="{htx:post.title}" /&gt;
+&lt;/htx:each&gt;
+
+&lt;!-- Need client behavior? Add htx:script. --&gt;
+&lt;!-- No "use client". No partition. --&gt;</code></pre>
+    <htx:component src="/ui/alert.htx" variant="success" title="No partition">
+      Every template has data access. Client behavior is additive (htx:script), not a category. No "use client" because there is no alternative to "use server."
+    </htx:component>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: This template accessed the database directly</h3>
+<p>Page title from htx:let: <strong><htx:v>pageTitle</htx:v></strong></p>
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <htx:component src="/ui/card.htx" title="{htx:post.title}">
+    <p><htx:v>post.body</htx:v></p>
+  </htx:component>
+  </htx:each>
+</div>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

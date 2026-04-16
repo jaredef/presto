@@ -1,0 +1,12 @@
+<htx:props>
+label = ""
+type = "text"
+name = ""
+placeholder = ""
+value = ""
+required = ""
+</htx:props>
+<div class="ui-field">
+  <label class="ui-label">{{ label }}</label>
+  <input type="{{ type }}" name="{{ name }}" placeholder="{{ placeholder }}" value="{{ value }}" class="ui-input" {{ required }} />
+</div>

@@ -1,0 +1,55 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<htx:grant type="websocket" as="ws_token" />
+<htx:let title="Module Kit Demo" />
+
+<h1><htx:v>title</htx:v></h1>
+<p style="color:#666;margin-bottom:2rem">Exercising all 12 modules through the full pipeline. Check the response headers.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem">
+  <htx:component src="/ui/card.htx" title="Request ID">
+    <p style="font-size:0.85rem;color:#666">Every response has an <code>X-Request-ID</code> header with a unique UUID.</p>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="Security Headers">
+    <p style="font-size:0.85rem;color:#666">X-Content-Type-Options, X-Frame-Options, Referrer-Policy applied to every response.</p>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="CORS">
+    <p style="font-size:0.85rem;color:#666">Access-Control-Allow-Origin: * on every response. OPTIONS returns 204.</p>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="Rate Limiting">
+    <p style="font-size:0.85rem;color:#666">200 req/min with X-RateLimit-* headers on every response.</p>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="ETag Caching">
+    <p style="font-size:0.85rem;color:#666">Content-hashed ETag header. Conditional 304 via If-None-Match.</p>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="Health Check">
+    <p style="font-size:0.85rem;color:#666">GET /healthz returns JSON with uptime, memory, and database check.</p>
+  </htx:component>
+</div>
+
+<h2 style="margin-bottom:1rem">Blog Posts (htx:data + htx:each)</h2>
+<htx:each items="posts" as="post">
+<htx:component src="/ui/card.htx" title="{htx:post.title}">
+  <p><htx:v>post.body</htx:v></p>
+  <a href="/blog/{htx:post.slug}" style="font-size:0.85rem">Read more</a>
+</htx:component>
+</htx:each>
+
+<h2 style="margin:2rem 0 1rem">Interactive Components (Layer 2)</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+  <htx:component src="/ui/card.htx" title="Dialog">
+    <htx:component src="/ui/dialog.htx" trigger="Open Dialog" title="Module Kit" description="All 12 modules are active on this page">
+      <p>Check the response headers in DevTools to see the modules at work.</p>
+    </htx:component>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="Slider">
+    <htx:component src="/ui/slider.htx" label="Rate Limit" name="rate" min="1" max="200" value="200" />
+  </htx:component>
+</div>
+
+<h2 style="margin:2rem 0 1rem">Create Post (htx:action mutation)</h2>
+<htx:component src="/ui/form.htx" action="create" type="post">
+  <htx:component src="/ui/input.htx" label="Title" name="title" required="required" />
+  <htx:component src="/ui/textarea.htx" label="Body" name="body" rows="3" />
+  <htx:component src="/ui/input.htx" label="Slug" name="slug" required="required" />
+  <input type="hidden" name="status" value="published" />
+</htx:component>

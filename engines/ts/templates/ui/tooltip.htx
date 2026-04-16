@@ -1,0 +1,15 @@
+<htx:props>
+text = ""
+position = "top"
+</htx:props>
+<span class="ui-tooltip-wrapper">
+  <htx:slot />
+  <span class="ui-tooltip ui-tooltip-{{ position }}" role="tooltip" style="display:none">{{ text }}</span>
+</span>
+<htx:script>
+  var tip = el.querySelector('.ui-tooltip');
+  el.addEventListener('mouseenter', function() { tip.style.display = ''; });
+  el.addEventListener('mouseleave', function() { tip.style.display = 'none'; });
+  el.addEventListener('focusin', function() { tip.style.display = ''; });
+  el.addEventListener('focusout', function() { tip.style.display = 'none'; });
+</htx:script>

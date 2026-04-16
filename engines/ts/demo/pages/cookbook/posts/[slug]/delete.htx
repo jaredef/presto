@@ -1,0 +1,19 @@
+<!-- SURFACE (Layer 0): Delete confirmation. Zero JavaScript.
+     Two-phase: GET shows confirmation, POST executes with signed token. -->
+
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="items" />
+
+<htx:each items="items" as="post">
+<div style="max-width:500px">
+  <htx:component src="/ui/alert.htx" variant="error" title="Delete Post">
+    Are you sure you want to delete "<htx:v>post.title</htx:v>"? This cannot be undone.
+  </htx:component>
+  <div style="margin-top:1.5rem">
+    <htx:component src="/ui/form.htx" action="delete" type="post" record="{htx:post.id}">
+    </htx:component>
+  </div>
+  <a href="/cookbook/posts/{htx:post.slug}" style="display:inline-block;margin-top:0.75rem">&larr; Cancel</a>
+</div>
+<htx:empty />
+<h1>Not Found</h1>
+</htx:each>

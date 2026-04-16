@@ -1,0 +1,53 @@
+<htx:data type="post" where="status = 'published'" limit="1" as="items" />
+
+<h1>Resumability → Latent Binding</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Qwik serializes state into HTML. PRESTO doesn't need to — the DOM IS the state.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>Qwik Resumability</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// Qwik serializes component state into HTML
+// attributes so the client can "resume"
+// without re-executing component logic.
+//
+// Event handlers lazy-load on first interaction.
+// Serialization boundaries must be managed.
+// The framework owns the state format.</code></pre>
+  </div>
+  <div>
+    <h3>PRESTO (Latent Binding)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;!-- Server renders data into the DOM --&gt;
+&lt;div class="price-display"
+     data-price="29.99"
+     data-currency="USD"&gt;
+  $29.99
+&lt;/div&gt;
+
+&lt;htx:script&gt;
+  // Script reads state FROM the DOM
+  var price = el.dataset.price;
+  // The document IS the serialized state.
+  // No framework. No resume. No serialize.
+&lt;/htx:script&gt;</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: Server-rendered data read by client script</h3>
+<htx:each items="items" as="post">
+<div id="resume-demo" data-title="{htx:post.title}" data-slug="{htx:post.slug}" style="padding:1rem;border:1px solid var(--ui-border);border-radius:8px">
+  <p><strong>Server rendered:</strong> <htx:v>post.title</htx:v></p>
+  <p id="resume-output" style="color:var(--ui-text-muted)">Script hasn't read the DOM yet...</p>
+</div>
+</htx:each>
+
+<script>
+  var el = document.getElementById('resume-demo');
+  if (el) {
+    var title = el.dataset.title;
+    var slug = el.dataset.slug;
+    document.getElementById('resume-output').textContent =
+      'Script read from DOM: title="' + title + '", slug="' + slug + '". No serialization framework needed.';
+  }
+</script>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

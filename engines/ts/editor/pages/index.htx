@@ -1,0 +1,21 @@
+<htx:data type="project" order="id desc" limit="50" as="projects" />
+
+<div class="editor-projects">
+  <div class="editor-projects-header">
+    <h1>PRESTO Builder</h1>
+    <p style="color:var(--ui-text-muted)">Visual page editor for .htx templates</p>
+  </div>
+  <div class="editor-projects-grid">
+    <htx:each items="projects" as="project">
+    <a href="/editor/{htx:project.slug}" class="project-card">
+      <htx:component src="/ui/card.htx" title="{htx:project.name}" description="Project">
+        <span style="font-size:0.8rem;color:var(--ui-text-muted)">Click to open</span>
+      </htx:component>
+    </a>
+    <htx:empty />
+    <htx:component src="/ui/alert.htx" variant="info" title="No projects yet">
+      Create your first project to start building.
+    </htx:component>
+    </htx:each>
+  </div>
+</div>

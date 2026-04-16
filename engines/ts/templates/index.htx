@@ -1,0 +1,82 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="10" as="posts" />
+<htx:grant type="websocket" as="ws_token" />
+<htx:let engine_name="PRESTO/TS v3" />
+
+<section style="text-align:center;padding:4rem 2rem">
+  <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:0.5rem"><htx:v>engine_name</htx:v></h1>
+  <p style="color:var(--ui-text-muted);font-size:1.1rem;margin-bottom:2rem">Conformant htxlang engine + 34-component library. 180 tests. Zero dependencies.</p>
+  <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:3rem">
+    <div style="text-align:center">
+      <div style="font-size:2rem;font-weight:700;color:var(--ui-primary)">22/22</div>
+      <div style="font-size:0.8rem;color:var(--ui-text-muted)">Verification Tests</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:2rem;font-weight:700;color:var(--ui-primary)">34</div>
+      <div style="font-size:0.8rem;color:var(--ui-text-muted)">Components</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:2rem;font-weight:700;color:var(--ui-primary)">0KB</div>
+      <div style="font-size:0.8rem;color:var(--ui-text-muted)">Layer 0 JS</div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:900px;margin:0 auto;padding:0 2rem 3rem">
+  <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">Posts from SQLite</h2>
+  <p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Queried via htx:data, rendered by the 22-stage pipeline</p>
+  <div style="display:grid;gap:1rem">
+    <htx:each items="posts" as="post">
+    <htx:component src="/ui/card.htx" title="{htx:post.title}">
+      <p><htx:v>post.body</htx:v></p>
+      <div style="margin-top:0.75rem">
+        <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>post.status | capitalize</htx:v></htx:component>
+        <a href="/blog/{htx:post.slug}" style="margin-left:0.5rem;font-size:0.85rem;color:var(--ui-primary)">Read more</a>
+      </div>
+    </htx:component>
+    </htx:each>
+  </div>
+</section>
+
+<section style="max-width:900px;margin:0 auto;padding:0 2rem 3rem">
+  <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">Layer 2: Interactive Components</h2>
+  <p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Each has scoped client behavior via htx:script — no framework required</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+    <htx:component src="/ui/card.htx" title="Dialog">
+      <htx:component src="/ui/dialog.htx" trigger="Open Dialog" title="Hello!" description="This is a PRESTO dialog component">
+        <p>Rendered server-side. Behavior added client-side. No framework.</p>
+        <p style="color:var(--ui-text-muted);font-size:0.85rem">Press ESC or click backdrop to close.</p>
+      </htx:component>
+    </htx:component>
+    <htx:component src="/ui/card.htx" title="Tooltip">
+      <htx:component src="/ui/tooltip.htx" text="This tooltip is pure DOM events — no framework">
+        <htx:component src="/ui/button.htx" variant="outline">Hover me</htx:component>
+      </htx:component>
+    </htx:component>
+    <htx:component src="/ui/card.htx" title="Slider">
+      <htx:component src="/ui/slider.htx" label="Volume" name="vol" min="0" max="100" value="60" />
+    </htx:component>
+    <htx:component src="/ui/card.htx" title="Switch">
+      <htx:component src="/ui/switch.htx" label="Dark Mode" name="theme" />
+    </htx:component>
+  </div>
+</section>
+
+<section style="max-width:900px;margin:0 auto;padding:0 2rem 3rem">
+  <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">Layer 0: Form with Signed Mutation</h2>
+  <p style="color:var(--ui-text-muted);margin-bottom:1.5rem">htx:action generates an HMAC-SHA256 token. Zero client JavaScript.</p>
+  <htx:component src="/ui/form.htx" action="create" type="post">
+    <htx:component src="/ui/input.htx" label="Title" type="text" name="title" placeholder="Post title" required="required" />
+    <htx:component src="/ui/textarea.htx" label="Body" name="body" placeholder="Write something..." rows="4" />
+    <htx:component src="/ui/select.htx" label="Status" name="status">
+      <option value="draft">Draft</option>
+      <option value="published">Published</option>
+    </htx:component>
+  </htx:component>
+</section>
+
+<footer style="text-align:center;padding:2rem;color:var(--ui-text-muted);font-size:0.8rem;border-top:1px solid var(--ui-border)">
+  PRESTO/TS v3 — 22/22 conformant — Seed v7 — 180 tests — presto-ui 34 components
+</footer>
+
+<link rel="stylesheet" href="/css/presto-ui.css" />
+<script src="/js/presto-signals.js"></script>

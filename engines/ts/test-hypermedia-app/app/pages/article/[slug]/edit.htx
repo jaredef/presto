@@ -1,0 +1,24 @@
+<!-- Layer 0: Edit form. htx:data loads the record.
+     htx:action with record ID generates an update token.
+     Escape: add auto-save via htx:script (Layer 2). -->
+
+<htx:data type="article" where="slug = '{htx:params.slug}'" limit="1" as="item_list" />
+<htx:each items="item_list" as="item">
+<section class="app-section" style="max-width:600px">
+  <h1>Edit <htx:v>item.title</htx:v></h1>
+  <htx:component src="/ui/form.htx" action="update" type="article" record="{htx:item.id}">
+      <htx:component src="/ui/input.htx" label="Title" name="title" value="{htx:item.title}" />
+      <htx:component src="/ui/textarea.htx" label="Body" name="body" rows="6" />
+      <htx:component src="/ui/select.htx" label="Status" name="status">
+        <option value="draft">Draft</option>
+        <option value="published">Published</option>
+      </htx:component>
+  </htx:component>
+  <a href="/article/{htx:item.slug}" style="display:inline-block;margin-top:1rem">&larr; Cancel</a>
+</section>
+<htx:empty />
+<section class="app-section">
+  <h1>Article not found</h1>
+  <a href="/article">&larr; Back</a>
+</section>
+</htx:each>

@@ -1,0 +1,4 @@
+<htx:props>
+title = "Untitled"
+</htx:props>
+<article><h2>{{ title }}</h2><htx:slot /></article>

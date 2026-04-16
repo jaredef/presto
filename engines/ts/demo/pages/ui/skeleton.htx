@@ -1,0 +1,6 @@
+<htx:props>
+width = "100%"
+height = "1rem"
+variant = "line"
+</htx:props>
+<div class="ui-skeleton ui-skeleton-{{ variant }}" style="width:{{ width }};height:{{ height }}" aria-hidden="true"></div>

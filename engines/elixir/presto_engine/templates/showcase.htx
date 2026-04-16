@@ -1,0 +1,94 @@
+<htx:layout none />
+<!DOCTYPE html>
+<html>
+<head><title>PRESTO Showcase</title></head>
+<body>
+
+<!-- htx:include -->
+<htx:include src="/partials/nav.htx" />
+
+<!-- htx:let -->
+<htx:let site_name="PRESTO Engine" />
+<htx:let demo_html="<em>emphasized</em>" />
+
+<!-- htx:v with pipes -->
+<h1><htx:v>site_name</htx:v></h1>
+<p>Upper: <htx:v>site_name | uppercase</htx:v></p>
+<p>Lower: <htx:v>site_name | lowercase</htx:v></p>
+<p>Trimmed: <htx:v>site_name | trim</htx:v></p>
+<p>Length: <htx:v>site_name | length</htx:v></p>
+<p>Capitalized: <htx:v>site_name | capitalize</htx:v></p>
+
+<!-- htx:v escaped vs raw -->
+<p>Escaped: <htx:v>demo_html</htx:v></p>
+<p>Raw: <htx:v raw>demo_html</htx:v></p>
+
+<!-- htx:raw block protection -->
+<htx:raw><htx:v>not.evaluated</htx:v> {htx:also.not.evaluated}</htx:raw>
+
+<!-- script block protection -->
+<script>var x = "{htx:not.touched}"; var y = "<htx:v>also.not.touched</htx:v>";</script>
+
+<!-- htx:data + htx:each with $index/$first/$last -->
+<htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+<h2>Posts</h2>
+<ul>
+<htx:each items="posts" as="post">
+<li class="{htx:post.slug}"><htx:v>post.title</htx:v> - <htx:v>post.body</htx:v></li>
+</htx:each>
+</ul>
+
+<!-- htx:each with htx:empty -->
+<htx:let empty_list="" />
+<htx:each items="no_items" as="item">
+<p><htx:v>item</htx:v></p>
+<htx:empty>
+<p>No items found.</p>
+</htx:each>
+
+<!-- htx:if / htx:else -->
+<htx:if test="posts">
+<p>Posts are available!</p>
+</htx:if>
+<htx:else>
+<p>No posts.</p>
+</htx:else>
+
+<!-- htx:component with props + slot -->
+<htx:component src="components/card.htx" title="Showcase Card">
+  <p>This is slot content inside a component.</p>
+</htx:component>
+
+<!-- {htx:} attribute binding -->
+<htx:data type="post" where="slug = 'hello-presto'" as="featured" />
+<htx:if test="featured">
+<a href="/blog/{htx:featured.slug}">Read: <htx:v>featured.title</htx:v></a>
+</htx:if>
+
+<!-- htx:grant -->
+<htx:grant type="channel" module="demo" as="chanToken" />
+<p>Channel token: <htx:v>chanToken.token</htx:v></p>
+
+<htx:grant type="websocket" as="wsToken" />
+<p>WebSocket token: <htx:v>wsToken.token</htx:v></p>
+
+<htx:grant type="asset" path="/files/report.pdf" as="assetGrant" />
+<p>Signed URL: <htx:v>assetGrant.url</htx:v></p>
+
+<!-- htx:action -->
+<htx:action name="delete_post" type="post" record="1" />
+
+<!-- htx:auth / htx:unauth -->
+<htx:auth>
+<p>Welcome, authenticated user: <htx:v>auth.user.name</htx:v></p>
+</htx:auth>
+<htx:auth role="admin">
+<p>Admin section visible.</p>
+</htx:auth>
+<htx:unauth>
+<p>Please sign in to see more.</p>
+</htx:unauth>
+
+<htx:include src="/partials/footer.htx" />
+</body>
+</html>

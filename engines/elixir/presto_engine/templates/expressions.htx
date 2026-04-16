@@ -1,0 +1,6 @@
+<htx:let greeting="Hello PRESTO" />
+<h1><htx:v>greeting</htx:v></h1>
+<p>Uppercase: <htx:v>greeting | uppercase</htx:v></p>
+<p>Lowercase: <htx:v>greeting | lowercase</htx:v></p>
+<htx:raw><htx:v>this.is.not.evaluated</htx:v></htx:raw>
+<script>var x = "{{ safe }}";</script>

@@ -1,0 +1,62 @@
+<h1>Route Guards → Security Through Absence</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Unprovided capabilities don't exist on the client. There is nothing to guard.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>React Route Guards</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// The client has ALL route code in the bundle
+// Route guards hide what shouldn't be shown:
+
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  if (!user) return &lt;Navigate to="/login" /&gt;;
+  return children;
+}
+
+// But: the route code exists in the bundle
+// The component JS for /admin is downloadable
+// Route guards prevent rendering, not delivery
+// "use server" tries to fix code leakage</code></pre>
+    <htx:component src="/ui/alert.htx" variant="warning" title="Security model">
+      The client has everything. The server defends every door. Routes exist even when hidden.
+    </htx:component>
+  </div>
+  <div>
+    <h3>PRESTO (Absence)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;!-- The server checks auth during resolution --&gt;
+&lt;htx:auth role="admin"&gt;
+  &lt;!-- Admin content here --&gt;
+  &lt;p&gt;Only admins see this.&lt;/p&gt;
+&lt;/htx:auth&gt;
+
+&lt;htx:unauth&gt;
+  &lt;p&gt;Please log in.&lt;/p&gt;
+&lt;/htx:unauth&gt;
+
+&lt;!-- If unauthenticated:
+     The admin content is never rendered.
+     It never reaches the client.
+     It doesn't exist in the response.
+     There is nothing to guard. --&gt;</code></pre>
+    <htx:component src="/ui/alert.htx" variant="success" title="Security model">
+      The client has only what the server provides. Unprovided capabilities don't exist.
+    </htx:component>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: Conditional rendering based on auth state</h3>
+<div style="padding:1rem;border:1px solid var(--ui-border);border-radius:8px">
+  <htx:auth>
+    <htx:component src="/ui/alert.htx" variant="success" title="Authenticated">
+      You are logged in as <htx:v>auth.user.name</htx:v> (<htx:v>auth.user.role</htx:v>).
+      This content was rendered because you are authenticated.
+    </htx:component>
+  </htx:auth>
+  <htx:unauth>
+    <htx:component src="/ui/alert.htx" variant="info" title="Not authenticated">
+      You are viewing the guest version. The authenticated content was never rendered — it does not exist in this response. View source to confirm: there is no hidden admin content.
+    </htx:component>
+  </htx:unauth>
+</div>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

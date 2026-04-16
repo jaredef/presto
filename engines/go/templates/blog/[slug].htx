@@ -1,0 +1,4 @@
+<htx:data type="post" slug="{htx:params.slug}" as="post" />
+
+<h1><htx:v>post.title</htx:v></h1>
+<div><htx:v>post.body</htx:v></div>

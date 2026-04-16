@@ -1,0 +1,12 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+<htx:let heading="Recent Posts" />
+
+<h1><htx:v>heading</htx:v></h1>
+
+<htx:each items="posts" as="post">
+<htx:component src="components/post-card.htx" title="{htx:post.title}">
+  <p><htx:v>post.body</htx:v></p>
+</htx:component>
+</htx:each>
+
+<htx:include src="/partials/footer.htx" />

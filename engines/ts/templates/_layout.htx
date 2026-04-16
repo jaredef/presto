@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head><title>PRESTO</title></head>
+<body>
+<nav><htx:auth><htx:v>auth.user.name</htx:v></htx:auth><htx:unauth>Guest</htx:unauth></nav>
+__content__
+</body>
+</html>

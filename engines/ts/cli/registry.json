@@ -1,0 +1,43 @@
+{
+  "components": {
+    "button": { "file": "ui/button.htx", "layer": 0, "deps": [] },
+    "input": { "file": "ui/input.htx", "layer": 0, "deps": [] },
+    "textarea": { "file": "ui/textarea.htx", "layer": 0, "deps": [] },
+    "select": { "file": "ui/select.htx", "layer": 0, "deps": [] },
+    "checkbox": { "file": "ui/checkbox.htx", "layer": 0, "deps": [] },
+    "radio": { "file": "ui/radio.htx", "layer": 0, "deps": [] },
+    "card": { "file": "ui/card.htx", "layer": 0, "deps": [] },
+    "badge": { "file": "ui/badge.htx", "layer": 0, "deps": [] },
+    "separator": { "file": "ui/separator.htx", "layer": 0, "deps": [] },
+    "avatar": { "file": "ui/avatar.htx", "layer": 0, "deps": [] },
+    "alert": { "file": "ui/alert.htx", "layer": 0, "deps": [] },
+    "skeleton": { "file": "ui/skeleton.htx", "layer": 0, "deps": [] },
+    "table": { "file": "ui/table.htx", "layer": 0, "deps": [] },
+    "pagination": { "file": "ui/pagination.htx", "layer": 0, "deps": [] },
+    "breadcrumb": { "file": "ui/breadcrumb.htx", "layer": 0, "deps": [] },
+    "nav": { "file": "ui/nav.htx", "layer": 0, "deps": [] },
+    "sidebar": { "file": "ui/sidebar.htx", "layer": 0, "deps": [] },
+    "form": { "file": "ui/form.htx", "layer": 0, "deps": ["button"] },
+    "dialog": { "file": "ui/dialog.htx", "layer": 2, "deps": ["button"], "signals": false },
+    "tabs": { "file": "ui/tabs.htx", "layer": 2, "deps": [], "signals": false },
+    "accordion": { "file": "ui/accordion.htx", "layer": 2, "deps": [], "signals": false },
+    "dropdown": { "file": "ui/dropdown.htx", "layer": 2, "deps": ["button"], "signals": false },
+    "popover": { "file": "ui/popover.htx", "layer": 2, "deps": ["button"], "signals": false },
+    "tooltip": { "file": "ui/tooltip.htx", "layer": 2, "deps": [], "signals": false },
+    "toast": { "file": "ui/toast.htx", "layer": 2, "deps": [], "signals": false },
+    "switch": { "file": "ui/switch.htx", "layer": 2, "deps": [], "signals": false },
+    "slider": { "file": "ui/slider.htx", "layer": 2, "deps": [], "signals": false },
+    "copy-button": { "file": "ui/copy-button.htx", "layer": 2, "deps": ["button"], "signals": false },
+    "search-input": { "file": "ui/search-input.htx", "layer": 2, "deps": ["input"], "signals": false },
+    "data-table": { "file": "ui/data-table.htx", "layer": 2, "deps": ["table"], "signals": false },
+    "command-palette": { "file": "ui/command-palette.htx", "layer": 2, "deps": [], "signals": false },
+    "live-feed": { "file": "ui/live-feed.htx", "layer": 4, "deps": [], "signals": true },
+    "presence": { "file": "ui/presence.htx", "layer": 4, "deps": [], "signals": true },
+    "live-counter": { "file": "ui/live-counter.htx", "layer": 4, "deps": [], "signals": true },
+    "collab-indicator": { "file": "ui/collab-indicator.htx", "layer": 4, "deps": [], "signals": true }
+  },
+  "assets": {
+    "signals": "public/js/presto-signals.js",
+    "css": "public/css/presto-ui.css"
+  }
+}

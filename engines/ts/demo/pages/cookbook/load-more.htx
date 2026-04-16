@@ -1,0 +1,46 @@
+<!-- SHALLOWS (Layer 1): Load More / Append.
+     Replaces: intersection observer + infinite scroll library + React state + pagination.
+     Button fetches next page fragment, appends to list. -->
+
+<htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+
+<h1>Load More</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Append content without page reload. Replaces infinite scroll libraries.</p>
+
+<div id="post-list">
+  <htx:each items="posts" as="post">
+  <div class="post-item" style="padding:1rem;border:1px solid var(--ui-border);border-radius:8px;margin-bottom:0.75rem">
+    <strong><htx:v>post.title</htx:v></strong>
+    <p style="font-size:0.85rem;color:var(--ui-text-muted);margin:0.25rem 0 0"><htx:v>post.body</htx:v></p>
+  </div>
+  </htx:each>
+</div>
+
+<button id="load-more-btn" class="ui-btn ui-btn-outline ui-btn-md" style="margin-top:0.5rem">Load More</button>
+
+<script>
+(function() {
+  var list = document.getElementById('post-list');
+  var btn = document.getElementById('load-more-btn');
+  var offset = 3;
+  btn.addEventListener('click', function() {
+    btn.textContent = 'Loading...';
+    fetch('/cookbook/load-more?offset=' + offset, { headers: { 'HX-Request': 'true' } })
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var newItems = doc.querySelectorAll('.post-item');
+        newItems.forEach(function(item) { list.appendChild(item.cloneNode(true)); });
+        offset += newItems.length;
+        btn.textContent = newItems.length > 0 ? 'Load More' : 'No more posts';
+        if (newItems.length === 0) btn.disabled = true;
+      });
+  });
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> useInfiniteQuery + IntersectionObserver + virtual scroll library + loading skeleton + error retry. Here: a button fetches the next page as HTML, parses it, appends the items. The server renders each page of results. No client-side pagination state.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

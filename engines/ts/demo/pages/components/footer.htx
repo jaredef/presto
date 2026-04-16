@@ -1,0 +1,10 @@
+<htx:props>
+welcome_to_my_website = "Welcome to My Website"
+this_page_was_create = "This page was created in the PRESTO Builder."
+</htx:props>
+<h1>{{ welcome_to_my_website }}</h1>
+<p>{{ this_page_was_create }}</p>
+
+<htx:component src="/ui/card.htx" title="Getting Started" description="Drag components or ask the AI">
+  <p>Use the palette on the left to drag components, or type in the chat below to describe what you want.</p>
+</htx:component>

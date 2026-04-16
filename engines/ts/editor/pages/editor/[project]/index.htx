@@ -1,0 +1,26 @@
+<htx:data type="project" where="slug = '{htx:params.project}'" limit="1" as="proj_list" />
+<htx:data type="page" order="id desc" limit="50" as="pages" />
+
+<htx:each items="proj_list" as="proj">
+<div class="editor-projects">
+  <div class="editor-projects-header">
+    <h1><htx:v>proj.name</htx:v></h1>
+    <p style="color:var(--ui-text-muted)">Pages in this project</p>
+    <a href="/" style="font-size:0.85rem">&larr; All projects</a>
+  </div>
+  <div class="editor-projects-grid">
+    <htx:each items="pages" as="page">
+    <a href="/editor/{htx:params.project}/{htx:page.slug}" class="project-card">
+      <htx:component src="/ui/card.htx" title="{htx:page.name}">
+        <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>page.status | capitalize</htx:v></htx:component>
+      </htx:component>
+    </a>
+    <htx:empty />
+    <htx:component src="/ui/alert.htx" variant="info" title="No pages">Create a page to start building.</htx:component>
+    </htx:each>
+  </div>
+</div>
+<htx:empty />
+<h1>Project not found</h1>
+<a href="/">&larr; Back</a>
+</htx:each>

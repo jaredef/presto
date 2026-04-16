@@ -1,0 +1,131 @@
+<htx:layout none />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<htx:data type="task" order="id" limit="9" as="tasks" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Split Screen — React SPA + Astro Inside REST</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 1.5rem 0; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; min-height: 600px; }
+    .panel-label { padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+    .panel-label.react { background: #eff6ff; color: #1e40af; border-bottom: 2px solid #3b82f6; }
+    .panel-label.astro { background: #fefce8; color: #92400e; border-bottom: 2px solid #f59e0b; border-left: 1px solid #e5e5e5; }
+    .panel-content { height: 100%; }
+    .panel-content iframe { width: 100%; height: 550px; border: none; }
+    .badge { font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 100px; font-weight: 600; }
+    .badge-l5 { background: #dbeafe; color: #1e40af; }
+    .badge-astro { background: #fef3c7; color: #92400e; }
+    .badge-l0 { background: #dcfce7; color: #166534; }
+    .surface-bar { padding: 0.75rem 1rem; background: #f0fdf4; border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Split Screen: React + Astro Inside REST</h1>
+  <p style="color:#888;margin-bottom:0.5rem">Two distinct frameworks — React and Astro — operating as bounded regions within the same PRESTO representation.</p>
+  <p style="font-size:0.85rem;margin-bottom:1rem">
+    <a href="/showcase">&larr; Showcase</a> &middot;
+    <a href="/encapsulation/full-spa">Full SPA proof</a> &middot;
+    <a href="/encapsulation/showcase">Island showcase</a>
+  </p>
+
+  <!-- Layer 0 surface bar -->
+  <div class="surface-bar">
+    <div>
+      <span class="badge badge-l0">Layer 0</span>
+      <strong style="margin-left:0.5rem">PRESTO Surface</strong> —
+      <htx:v>posts | length</htx:v> posts, <htx:v>tasks | length</htx:v> tasks from SQLite
+    </div>
+    <div style="font-size:0.8rem;color:#888">
+      <htx:auth><htx:v>auth.user.name</htx:v></htx:auth>
+      <htx:unauth>Guest</htx:unauth>
+      &middot; Server-rendered HTML, zero JS
+    </div>
+  </div>
+
+  <!-- The split: React SPA on the left, Astro output on the right -->
+  <div class="split">
+    <!-- LEFT: React SPA Island -->
+    <div>
+      <div class="panel-label react">
+        <div><span class="badge badge-l5">Layer 5</span> React SPA (393 KB)</div>
+        <div style="font-size:0.65rem;color:#888">Router + State + 4 Views</div>
+      </div>
+      <div class="panel-content">
+        <template id="island-data-full-spa"><htx:v raw>posts | json</htx:v></template>
+        <htx:component src="/ui/island.htx" name="full-spa">
+          <div style="padding:3rem;text-align:center;color:#888">Loading React SPA...</div>
+        </htx:component>
+      </div>
+    </div>
+
+    <!-- RIGHT: Astro compiled output -->
+    <div>
+      <div class="panel-label astro">
+        <div><span class="badge badge-astro">Astro 6</span> Static Build (0 KB JS)</div>
+        <div style="font-size:0.65rem;color:#888">Compiled HTML in iframe</div>
+      </div>
+      <div class="panel-content">
+        <iframe src="/astro/index.html" title="Astro output"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explainer -->
+  <div style="padding:1.5rem;background:#fff;border:1px solid #e5e5e5;border-radius:12px;font-size:0.9rem;line-height:1.7">
+    <h3 style="margin-top:0">Three Architectures in One HTTP Response</h3>
+    <p>This page contains three distinct architectural styles, each at its correct depth:</p>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin:1rem 0">
+      <thead>
+        <tr style="border-bottom:1px solid #e5e5e5">
+          <th style="text-align:left;padding:0.4rem 0">Region</th>
+          <th style="text-align:left">Style</th>
+          <th style="text-align:left">Depth</th>
+          <th style="text-align:left">JavaScript</th>
+          <th style="text-align:left">Rendering</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:0.4rem 0">Surface bar + heading</td>
+          <td>REST (PRESTO)</td>
+          <td>Layer 0</td>
+          <td>0 KB</td>
+          <td>Engine pipeline at request time</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:0.4rem 0">Left panel</td>
+          <td>Distributed Objects (React)</td>
+          <td>Layer 5</td>
+          <td>393 KB</td>
+          <td>Client-side, virtual DOM</td>
+        </tr>
+        <tr>
+          <td style="padding:0.4rem 0">Right panel</td>
+          <td>Static (Astro)</td>
+          <td>Layer 0 (compiled)</td>
+          <td>0 KB</td>
+          <td>Astro compiler at build time</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The PRESTO representation encloses both. React operates as a Layer 5 island with client-side routing and state. Astro's output is static HTML — zero JavaScript — served in an iframe. The surface bar is server-rendered with live data from SQLite.</p>
+
+    <p><strong>The REST boundary holds.</strong> The HTTP response is a complete HTML document. The React SPA mounts after the page is painted. The Astro iframe loads its static HTML independently. If either fails, the surface bar and the other panel remain functional. The page degrades gracefully in every direction.</p>
+
+    <h3>The Implication</h3>
+    <p>If PRESTO can enclose React and Astro simultaneously in the same representation, it can enclose <em>any</em> combination of client-side frameworks. A page could contain a Vue dashboard island, a Svelte form island, and an Astro content section — each at its correct depth, each using its own framework, all enclosed within a single server-rendered REST representation.</p>
+    <p>The representation is the universal carrier. Because HTML can contain anything, and because the server controls what it contains, the REST boundary provides the architectural properties (cacheability, authority, completeness) while each enclosed style provides its specific capabilities within its bounded region.</p>
+    <p>This is Section 4.9.5 of the white paper made visible: <em>"Any client-side architectural style can be encapsulated within a REST representation."</em></p>
+  </div>
+
+</div>
+</body>
+</html>

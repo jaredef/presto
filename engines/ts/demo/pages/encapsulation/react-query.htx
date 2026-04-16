@@ -1,0 +1,110 @@
+<htx:layout none />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="10" as="surfacePosts" />
+<htx:grant type="channel" module="builder" as="islandToken" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encapsulation Proof — React Query Inside REST</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .proof-container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+    .panel { border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+    .panel-header { padding: 0.75rem 1rem; font-weight: 600; font-size: 0.85rem; }
+    .panel-header.surface { background: #f0fdf4; color: #166534; border-bottom: 2px solid #22c55e; }
+    .panel-header.island { background: #eff6ff; color: #1e40af; border-bottom: 2px solid #3b82f6; }
+    .panel-body { padding: 1rem; background: #fff; min-height: 300px; }
+    .panel-meta { padding: 0.5rem 1rem; background: #f8f8fa; font-size: 0.75rem; color: #888; border-top: 1px solid #e5e5e5; }
+    .badge-layer { display: inline-block; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 100px; font-weight: 600; }
+    .badge-layer.l0 { background: #dcfce7; color: #166534; }
+    .badge-layer.l5 { background: #dbeafe; color: #1e40af; }
+    .explainer { margin-top: 2rem; padding: 1.5rem; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; font-size: 0.9rem; line-height: 1.7; }
+  </style>
+</head>
+<body>
+<div class="proof-container">
+
+  <h1>Encapsulation Proof: React Query Inside REST</h1>
+  <p style="color:#888;margin-bottom:0.5rem">The distributed objects architecture operating within the RESTful boundary. Both sides show the same data. Both work.</p>
+  <p style="font-size:0.85rem"><a href="/layer5">&larr; Layer 5 First</a> &middot; <a href="/cookbook">&larr; Cookbook</a></p>
+
+  <!-- THE SPLIT: Same data, two depths -->
+  <div class="split">
+
+    <!-- LEFT: Layer 0 — Server-rendered, zero JavaScript -->
+    <div class="panel">
+      <div class="panel-header surface">
+        <span class="badge-layer l0">Layer 0</span> Server-Rendered (htx:data)
+      </div>
+      <div class="panel-body">
+        <htx:each items="surfacePosts" as="post">
+        <div style="padding:0.5rem 0;border-bottom:1px solid #f0f0f0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong style="font-size:0.85rem"><htx:v>post.title</htx:v></strong>
+            <span style="font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:100px;background:#dcfce7;color:#166534"><htx:v>post.status</htx:v></span>
+          </div>
+          <div style="font-size:0.78rem;color:#888;margin-top:0.15rem"><htx:v>post.body</htx:v></div>
+        </div>
+        </htx:each>
+        <htx:empty>
+        <p style="color:#888">No published posts.</p>
+        </htx:empty>
+      </div>
+      <div class="panel-meta">
+        Zero JavaScript. Data resolved by the engine at request time. Complete HTML. Cacheable. Universally accessible. The page works without a browser JavaScript engine.
+      </div>
+    </div>
+
+    <!-- RIGHT: Layer 5 — React + React Query island (standard interface) -->
+    <div class="panel">
+      <div class="panel-header island">
+        <span class="badge-layer l5">Layer 5</span> React Query Island (Standard Interface)
+      </div>
+      <div class="panel-body">
+        <!-- Token bridge: server-materialized channel credential -->
+        <input type="hidden" id="island-token-react-query-posts" value="{htx:islandToken}" />
+        <!-- Island component: renders mount div + bootstrap script -->
+        <htx:component src="/ui/island.htx" name="react-query-posts">
+          <div style="padding:2rem;text-align:center;color:#888">Loading React + React Query...</div>
+        </htx:component>
+      </div>
+      <div class="panel-meta">
+        React 19 + React Query 5. 440KB bundle. Mounted via the standard island interface. Token bridge for channel fetch.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EXPLAINER -->
+  <div class="explainer">
+    <h3 style="margin-top:0">What You're Seeing</h3>
+    <p>Both panels show the same posts from the same SQLite database.</p>
+    <p><strong>The left panel</strong> is Layer 0. The engine queried SQLite via <code>htx:data</code>, iterated the results via <code>htx:each</code>, and rendered complete HTML. Zero JavaScript. The data arrived with the page. There is no loading state because there is nothing to wait for. This panel is cacheable by any HTTP intermediary.</p>
+    <p><strong>The right panel</strong> is Layer 5. React mounts into the <code>#react-island</code> div. React Query fetches from <code>/api/channel/builder/posts</code> using a Bearer token that the server materialized via <code>htx:grant</code>. The component manages filter state, loading state, and refetch — the full React Query developer experience. This panel is a distributed objects architecture operating within a bounded region of the REST representation.</p>
+    <p><strong>The encapsulation holds.</strong> The left panel's properties — cacheability, zero JavaScript, server authority, universal accessibility — are not affected by the right panel's existence. The REST boundary holds at the HTTP level. The DO style operates within its bounded region. Both coexist in the same document.</p>
+
+    <h3>The Escape Hatch</h3>
+    <p>Remove the React island. Delete the <code>&lt;script&gt;</code> tag that loads it. The left panel still works. The page is complete. The data is still there. The escape hatch goes up — from Layer 5 to Layer 0. Nothing is lost except the client-side filtering and refetch capability, which were Layer 5 properties that most content pages don't need.</p>
+    <p>The developer keeps the island for the pages that need it — dashboards, admin panels, interactive tools. They surface everything else. React stays where it earns its constraint cost.</p>
+
+    <h3>The Numbers</h3>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-top:0.75rem">
+      <tr style="border-bottom:1px solid #e5e5e5"><th style="text-align:left;padding:0.4rem 0">Metric</th><th style="text-align:left">Layer 0</th><th style="text-align:left">Layer 5 Island</th></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">JavaScript</td><td>0 KB</td><td>440 KB</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Loading state</td><td>None (data in HTML)</td><td>"Loading posts..."</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Cacheable</td><td>Yes (ETag, Cache-Control)</td><td>No (client fetch)</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Works without JS</td><td>Yes</td><td>No</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Client filtering</td><td>No</td><td>Yes (React state)</td></tr>
+      <tr><td style="padding:0.4rem 0">Refetch</td><td>Page reload</td><td>Button click</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- Island bootstrap handled by the standard island.htx component above -->
+
+</body>
+</html>

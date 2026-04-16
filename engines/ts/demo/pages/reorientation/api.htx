@@ -1,0 +1,63 @@
+<htx:grant type="channel" module="builder" as="channelToken" />
+
+<h1>API Routes → Channel Handlers</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Token-scoped JSON endpoints. No route files. No CORS setup. No tRPC.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>Next.js API Routes / tRPC</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// app/api/posts/route.ts
+export async function GET(request: Request) {
+  const posts = await db.query(...);
+  return Response.json(posts);
+}
+
+// Requires: API route file, CORS config,
+// auth middleware, request validation,
+// error handling, type sync (or tRPC)</code></pre>
+  </div>
+  <div>
+    <h3>PRESTO (Channel Handler)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// Module registers a channel handler:
+registry.registerChannelHandler({
+  module: () =&gt; "builder",
+  handle(path, query, userId, opts) {
+    return { status: 200, data: { ... } };
+  }
+});
+
+// Client accesses via token:
+// htx:grant issues a scoped Bearer token
+// fetch('/api/channel/builder/load',
+//   { headers: { Authorization: 'Bearer ...' } })</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: Channel API with granted token</h3>
+<div style="padding:1rem;border:1px solid var(--ui-border);border-radius:8px">
+  <p>Token materialized by htx:grant:</p>
+  <div style="font-family:monospace;font-size:0.7rem;word-break:break-all;background:#f5f5f5;padding:0.75rem;border-radius:4px">
+    <htx:if test="channelToken"><htx:v>channelToken</htx:v></htx:if>
+    <htx:else>No token (grant provider not registered for this module)</htx:else>
+  </div>
+  <button id="btn-fetch-api" class="ui-btn ui-btn-outline ui-btn-sm" style="margin-top:0.75rem">Fetch from Channel API</button>
+  <pre id="api-result" style="background:#1e1e2e;color:#cdd6f4;padding:0.75rem;border-radius:6px;font-size:0.8rem;margin-top:0.75rem;display:none"></pre>
+</div>
+
+<script>
+  document.getElementById('btn-fetch-api').addEventListener('click', function() {
+    var tokenEl = document.querySelector('[class="ui-btn ui-btn-outline ui-btn-sm"]');
+    var token = document.querySelector('[style*="word-break"]').textContent.trim();
+    var result = document.getElementById('api-result');
+    result.style.display = 'block';
+    result.textContent = 'Fetching...';
+    fetch('/api/channel/builder/registry', {
+      headers: { Authorization: 'Bearer ' + token }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { result.textContent = JSON.stringify(d, null, 2).substring(0, 500) + '...'; })
+    .catch(function(e) { result.textContent = 'Error: ' + e.message; });
+  });
+</script>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

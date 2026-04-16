@@ -1,0 +1,4 @@
+<htx:props>
+title = "Default"
+</htx:props>
+<div class="card"><h3>{{ title }}</h3><htx:slot /></div>

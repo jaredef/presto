@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRESTO/C</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">PRESTO<span class="logo-slash">/</span><span class="logo-c">C</span></a>
+      <nav class="main-nav">
+        <a href="/">Home</a>
+        <a href="/showcase">Showcase</a>
+        <a href="/blog/first">Blog</a>
+      </nav>
+      <div class="auth-status">
+        <htx:auth><htx:v>auth.user.name</htx:v></htx:auth>
+        <htx:unauth>Guest</htx:unauth>
+      </div>
+    </div>
+  </header>
+  <main>
+    __content__
+  </main>
+</body>
+</html>

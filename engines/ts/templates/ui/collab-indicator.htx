@@ -1,0 +1,24 @@
+<htx:props>
+module = "collab"
+</htx:props>
+<div class="ui-collab" data-module="{{ module }}">
+  <htx:grant type="channel" module="{{ module }}" as="collab_token" />
+  <div class="ui-collab-users"></div>
+  <span class="ui-collab-status"></span>
+  <input type="hidden" class="ui-token" value="{htx:collab_token}" />
+</div>
+<htx:script>
+  var usersEl = el.querySelector('.ui-collab-users');
+  var statusEl = el.querySelector('.ui-collab-status');
+  var token = el.querySelector('.ui-token').value;
+  var mod = el.dataset.module;
+  if (token && typeof channel === 'function') {
+    var ch = channel('wss://' + location.host + '/api/channel/' + mod, token);
+    ch.on('editors', function(data) {
+      usersEl.innerHTML = (data.users || []).map(function(u) {
+        return '<span class="ui-collab-avatar" style="background:' + (u.color || '#888') + '" title="' + u.name + '">' + u.name.charAt(0) + '</span>';
+      }).join('');
+      statusEl.textContent = data.users.length > 1 ? data.users.length + ' editing' : '';
+    });
+  }
+</htx:script>

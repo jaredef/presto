@@ -1,0 +1,33 @@
+<h1>PRESTO Cookbook</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Working implementations at the correct constraint depth. Each recipe replaces an entire React ecosystem stack.</p>
+
+<h2>Surface (Layer 0) — Zero JavaScript</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Replaces: Next.js SSR + getServerSideProps + API Routes + Server Actions + React Query + NextAuth + Route Guards</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/cookbook/posts" style="text-decoration:none"><htx:component src="/ui/card.htx" title="CRUD App">List, detail, create, edit, delete. Full mutation cycle with signed tokens.</htx:component></a>
+  <a href="/cookbook/search" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Search + Pagination">Server-side search and paginated results. No React Query.</htx:component></a>
+  <a href="/cookbook/protected" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Auth-Gated Pages">Role-based rendering. Security through absence.</htx:component></a>
+</div>
+
+<h2>Shallows (Layer 1) — htmx Attributes</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Replaces: React Router + client navigation + Suspense + loading states</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/cookbook/live-search" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Live Search">Debounced search with inline results. No client state.</htx:component></a>
+  <a href="/cookbook/tabs" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Tab Navigation">Content tabs without page reload. Server renders each panel.</htx:component></a>
+  <a href="/cookbook/load-more" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Load More">Append content without page reload. No infinite scroll library.</htx:component></a>
+</div>
+
+<h2>Wading Depth (Layer 2) — Scoped Scripts</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Replaces: React Hook Form + Zod + TanStack Table + dnd-kit + Redux</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/cookbook/validated-form" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Validated Form">Client validation + optimistic submit. No form library.</htx:component></a>
+  <a href="/cookbook/data-grid" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Data Grid">Sort, filter, inline edit. No TanStack Table.</htx:component></a>
+  <a href="/cookbook/kanban" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Kanban Board">Drag-and-drop columns. No dnd-kit. No Redux.</htx:component></a>
+</div>
+
+<h2>Mid-Depth (Layer 4) — Channel Integration</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Replaces: Pusher + Socket.io + global state + toast libraries</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/cookbook/notifications" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Notification Feed">Real-time notifications via channel grant.</htx:component></a>
+  <a href="/cookbook/presence" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Presence Indicator">Who's online, via channel.</htx:component></a>
+</div>

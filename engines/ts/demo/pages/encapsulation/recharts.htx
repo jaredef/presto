@@ -1,0 +1,142 @@
+<htx:layout none />
+<htx:data type="post" order="id desc" limit="50" as="allPosts" />
+<htx:data type="task" order="id" limit="50" as="allTasks" />
+<htx:data type="post" where="status = 'published'" order="id desc" as="published" />
+<htx:data type="post" where="status = 'draft'" order="id desc" as="drafts" />
+<htx:data type="task" where="status = 'todo'" as="todoTasks" />
+<htx:data type="task" where="status = 'in-progress'" as="progressTasks" />
+<htx:data type="task" where="status = 'done'" as="doneTasks" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encapsulation Proof — Recharts Inside REST</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .proof-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .split { display: grid; grid-template-columns: 340px 1fr; gap: 2rem; margin-top: 1.5rem; }
+    .panel { border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+    .panel-header { padding: 0.75rem 1rem; font-weight: 600; font-size: 0.85rem; }
+    .panel-header.surface { background: #f0fdf4; color: #166534; border-bottom: 2px solid #22c55e; }
+    .panel-header.island { background: #eff6ff; color: #1e40af; border-bottom: 2px solid #3b82f6; }
+    .panel-body { padding: 1rem; background: #fff; }
+    .panel-meta { padding: 0.5rem 1rem; background: #f8f8fa; font-size: 0.75rem; color: #888; border-top: 1px solid #e5e5e5; }
+    .stat-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #f5f5f5; font-size: 0.85rem; }
+    .stat-label { color: #666; }
+    .stat-value { font-weight: 600; }
+    .badge-layer { display: inline-block; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 100px; font-weight: 600; }
+    .badge-layer.l0 { background: #dcfce7; color: #166534; }
+    .badge-layer.l5 { background: #dbeafe; color: #1e40af; }
+    .explainer { margin-top: 2rem; padding: 1.5rem; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; font-size: 0.9rem; line-height: 1.7; }
+  </style>
+</head>
+<body>
+<div class="proof-container">
+
+  <h1>Encapsulation Proof: Recharts Inside REST</h1>
+  <p style="color:#888;margin-bottom:0.5rem">The surface shows the data. The depth visualizes it. Neither replaces the other.</p>
+  <p style="font-size:0.85rem"><a href="/encapsulation/react-query">React Query proof</a> &middot; <a href="/layer5">&larr; Layer 5 First</a></p>
+
+  <div class="split">
+
+    <!-- LEFT: Layer 0 — Server-rendered data tables, zero JavaScript -->
+    <div>
+      <div class="panel" style="margin-bottom:1rem">
+        <div class="panel-header surface">
+          <span class="badge-layer l0">Layer 0</span> Post Stats
+        </div>
+        <div class="panel-body">
+          <div class="stat-row"><span class="stat-label">Total Posts</span><span class="stat-value"><htx:v>allPosts | length</htx:v></span></div>
+          <div class="stat-row"><span class="stat-label">Published</span><span class="stat-value" style="color:#22c55e"><htx:v>published | length</htx:v></span></div>
+          <div class="stat-row"><span class="stat-label">Drafts</span><span class="stat-value" style="color:#f59e0b"><htx:v>drafts | length</htx:v></span></div>
+        </div>
+        <div class="panel-meta">Zero JavaScript. Counts resolved by the engine.</div>
+      </div>
+
+      <div class="panel" style="margin-bottom:1rem">
+        <div class="panel-header surface">
+          <span class="badge-layer l0">Layer 0</span> Task Stats
+        </div>
+        <div class="panel-body">
+          <div class="stat-row"><span class="stat-label">Total Tasks</span><span class="stat-value"><htx:v>allTasks | length</htx:v></span></div>
+          <div class="stat-row"><span class="stat-label">To Do</span><span class="stat-value" style="color:#6366f1"><htx:v>todoTasks | length</htx:v></span></div>
+          <div class="stat-row"><span class="stat-label">In Progress</span><span class="stat-value" style="color:#f59e0b"><htx:v>progressTasks | length</htx:v></span></div>
+          <div class="stat-row"><span class="stat-label">Done</span><span class="stat-value" style="color:#22c55e"><htx:v>doneTasks | length</htx:v></span></div>
+        </div>
+        <div class="panel-meta">Zero JavaScript. Same data the chart uses.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header surface">
+          <span class="badge-layer l0">Layer 0</span> Recent Posts
+        </div>
+        <div class="panel-body" style="max-height:300px;overflow-y:auto">
+          <htx:each items="allPosts" as="post">
+          <div style="padding:0.35rem 0;border-bottom:1px solid #f5f5f5;font-size:0.8rem">
+            <div style="display:flex;justify-content:space-between">
+              <span><htx:v>post.title</htx:v></span>
+              <span style="font-size:0.65rem;padding:0.1rem 0.35rem;border-radius:100px;background:#f3f4f6;color:#666"><htx:v>post.status</htx:v></span>
+            </div>
+          </div>
+          </htx:each>
+        </div>
+        <div class="panel-meta">Every row is server-rendered HTML. No framework.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Layer 5 — Recharts interactive dashboard (standard interface) -->
+    <div class="panel">
+      <div class="panel-header island">
+        <span class="badge-layer l5">Layer 5</span> Recharts Dashboard (Standard Interface)
+      </div>
+      <div class="panel-body">
+        <!-- Data bridge: server-resolved data serialized for the React island -->
+        <template id="island-data-recharts-dashboard"><htx:v raw>allPosts | json</htx:v></template>
+        <!-- Island component: renders mount div + bootstrap script -->
+        <htx:component src="/ui/island.htx" name="recharts-dashboard">
+          <div style="padding:3rem;text-align:center;color:#888">Loading React + Recharts...</div>
+        </htx:component>
+      </div>
+      <div class="panel-meta">
+        React 19 + Recharts 3. 840KB bundle. Mounted via the standard island interface. Data bridge via &lt;template&gt; element.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Data bridge: server-resolved data serialized for the React island -->
+  <!-- Data bridges moved into the panel body alongside the island component -->
+
+  <div class="explainer">
+    <h3 style="margin-top:0">What You're Seeing</h3>
+    <p><strong>The left panels</strong> are Layer 0. The engine queried SQLite, computed counts via the <code>length</code> pipe, and rendered HTML. Zero JavaScript. The stats, the counts, and the post list are all in the HTML when it arrives. These panels are cacheable, indexable, and accessible without a browser JavaScript engine.</p>
+    <p><strong>The right panel</strong> is Layer 5. React mounts into <code>#recharts-island</code>. Recharts renders interactive SVG charts — bar charts, pie charts, line charts with tooltips, legends, and view switching. This is a genuine UI capability: the browser's native HTML cannot render interactive data visualizations. Layer 5 is the correct depth for this feature.</p>
+    <p><strong>The data bridge.</strong> The server resolved both <code>allPosts</code> and <code>allTasks</code> via <code>htx:data</code> and serialized them as JSON into <code>&lt;script type="application/json"&gt;</code> tags. The React island reads this server-provided data on mount. No fetch. No API call. No loading state. The data crossed the bilateral boundary via the representation itself.</p>
+
+    <h3>Why This Matters</h3>
+    <p>The left panels and the right panel use the <strong>same data from the same database</strong>. The left panels display it as text. The right panel visualizes it as interactive charts. Neither could do the other's job:</p>
+    <ul>
+      <li>The surface cannot render interactive SVG visualizations with tooltips and animations. That requires Layer 5.</li>
+      <li>Layer 5 cannot provide cacheable, zero-JS, universally accessible stat pages. That requires the surface.</li>
+    </ul>
+    <p>The correct architecture has both. The surface for what the surface does best. Depth for what depth does best. The REST boundary holds at the HTTP level. The DO model operates within its bounded region. This is not a compromise. It is the correct architectural relationship.</p>
+
+    <h3>The Numbers</h3>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse">
+      <tr style="border-bottom:1px solid #e5e5e5"><th style="text-align:left;padding:0.4rem 0">Metric</th><th style="text-align:left">Layer 0 Panels</th><th style="text-align:left">Recharts Island</th></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">JavaScript</td><td>0 KB</td><td>840 KB</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Data source</td><td>htx:data (server)</td><td>JSON from server via script tag</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Interactive</td><td>No (static text)</td><td>Yes (tooltips, legends, view switch)</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Cacheable</td><td>Yes</td><td>Bundle is cacheable; data is in the HTML</td></tr>
+      <tr><td style="padding:0.4rem 0">Works without JS</td><td>Yes</td><td>No (but data is visible in Layer 0 panels)</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- Island bootstrap handled by the standard island.htx component above -->
+
+</body>
+</html>

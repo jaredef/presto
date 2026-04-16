@@ -1,0 +1,11 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="20" as="posts" />
+<h1>Blog</h1>
+<htx:each items="posts" as="post">
+<htx:component src="/ui/card.htx" title="{htx:post.title}">
+  <p><htx:v>post.body</htx:v></p>
+  <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>post.status | capitalize</htx:v></htx:component>
+  <a href="/blog/{htx:post.slug}" style="margin-left:0.5rem;font-size:0.85rem">Read</a>
+</htx:component>
+<htx:empty />
+<htx:component src="/ui/alert.htx" variant="info" title="No posts">Create one from the home page.</htx:component>
+</htx:each>

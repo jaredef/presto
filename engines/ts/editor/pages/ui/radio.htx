@@ -1,0 +1,11 @@
+<htx:props>
+label = ""
+name = ""
+value = ""
+checked = ""
+</htx:props>
+<label class="ui-radio">
+  <input type="radio" name="{{ name }}" value="{{ value }}" {{ checked }} />
+  <span class="ui-radio-mark"></span>
+  <span class="ui-radio-label">{{ label }}</span>
+</label>

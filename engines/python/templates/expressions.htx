@@ -1,0 +1,8 @@
+<htx:let greeting="Hello World" />
+<htx:let name="presto" />
+
+<h1><htx:v>greeting</htx:v></h1>
+<p class="upper"><htx:v>name | uppercase</htx:v></p>
+<p class="lower"><htx:v>name | lowercase</htx:v></p>
+<p class="cap"><htx:v>name | capitalize</htx:v></p>
+<a href="/page/{htx:name}">Link</a>

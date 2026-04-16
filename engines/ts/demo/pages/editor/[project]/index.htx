@@ -1,0 +1,38 @@
+<htx:data type="project" where="slug = '{htx:params.project}'" limit="1" as="proj_list" />
+
+<htx:each items="proj_list" as="proj">
+<div style="max-width:800px;margin:2rem auto;padding:0 1.5rem">
+  <h1><htx:v>proj.name</htx:v></h1>
+  <p style="color:var(--ui-text-muted)">Pages in this project</p>
+  <a href="/editor" style="font-size:0.85rem">&larr; All projects</a>
+</div>
+<htx:empty />
+<div style="max-width:800px;margin:2rem auto;padding:0 1.5rem">
+  <h1>Project not found</h1>
+  <a href="/editor">&larr; Back</a>
+</div>
+</htx:each>
+
+<htx:data type="page" order="id desc" limit="50" as="pages" />
+<div style="max-width:800px;margin:0 auto;padding:0 1.5rem">
+  <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:1rem">
+    <htx:each items="pages" as="pg">
+    <a href="/editor/{htx:params.project}/{htx:pg.slug}" style="text-decoration:none">
+      <div class="ui-card" style="cursor:pointer">
+        <div class="ui-card-header">
+          <h3 class="ui-card-title"><htx:v>pg.name</htx:v></h3>
+        </div>
+        <div class="ui-card-content" style="padding:0.75rem 1.5rem">
+          <span class="ui-badge ui-badge-secondary"><htx:v>pg.status | capitalize</htx:v></span>
+          <span style="font-size:0.8rem;color:var(--ui-text-muted);margin-left:0.5rem">/<htx:v>pg.slug</htx:v></span>
+        </div>
+      </div>
+    </a>
+    <htx:empty />
+    <div class="ui-alert ui-alert-info" role="alert">
+      <div class="ui-alert-title">No pages</div>
+      <div class="ui-alert-body">Create a page to start building.</div>
+    </div>
+    </htx:each>
+  </div>
+</div>

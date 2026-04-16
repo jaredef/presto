@@ -1,0 +1,8 @@
+<htx:props>
+separator = "/"
+</htx:props>
+<nav class="ui-breadcrumb" aria-label="Breadcrumb">
+  <ol class="ui-breadcrumb-list">
+    <htx:slot />
+  </ol>
+</nav>

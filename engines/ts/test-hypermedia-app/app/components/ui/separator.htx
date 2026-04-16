@@ -1,0 +1,4 @@
+<htx:props>
+orientation = "horizontal"
+</htx:props>
+<hr class="ui-separator ui-separator-{{ orientation }}" />

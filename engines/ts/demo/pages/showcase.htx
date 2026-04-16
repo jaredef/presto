@@ -1,0 +1,168 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<htx:data type="task" order="id" limit="9" as="tasks" />
+
+<div style="text-align:center;padding:3rem 0 2rem">
+  <h1 style="font-size:2.5rem;font-weight:800;margin:0">PRESTO</h1>
+  <p style="color:var(--ui-text-muted);font-size:1.1rem;margin:0.5rem 0">Progressive Representational State Transfer with On-demand Code</p>
+  <p style="font-size:0.9rem;color:var(--ui-text-muted)">
+    7 engines &middot; 22-stage pipeline &middot; 13 modules &middot; 34 components &middot; 7 islands &middot; 17 npm packages
+  </p>
+</div>
+
+<!-- Stats -->
+<div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:3rem;flex-wrap:wrap">
+  <div style="text-align:center;min-width:80px">
+    <div style="font-size:1.75rem;font-weight:700;color:var(--ui-primary)"><htx:v>posts | length</htx:v></div>
+    <div style="font-size:0.75rem;color:var(--ui-text-muted)">Posts</div>
+  </div>
+  <div style="text-align:center;min-width:80px">
+    <div style="font-size:1.75rem;font-weight:700;color:var(--ui-primary)"><htx:v>tasks | length</htx:v></div>
+    <div style="font-size:0.75rem;color:var(--ui-text-muted)">Tasks</div>
+  </div>
+  <div style="text-align:center;min-width:80px">
+    <div style="font-size:1.75rem;font-weight:700;color:var(--ui-primary)">238</div>
+    <div style="font-size:0.75rem;color:var(--ui-text-muted)">Tests</div>
+  </div>
+  <div style="text-align:center;min-width:80px">
+    <div style="font-size:1.75rem;font-weight:700;color:var(--ui-primary)">0</div>
+    <div style="font-size:0.75rem;color:var(--ui-text-muted)">Build Steps</div>
+  </div>
+</div>
+
+<!-- Encapsulation Proofs -->
+<h2 style="margin-bottom:0.5rem">Encapsulation Proofs</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">React npm packages running inside bounded regions of server-rendered pages. The REST boundary holds.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/encapsulation/showcase" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Island Showcase" description="5 packages, 1 protocol">
+      TipTap, Leaflet, CodeMirror, React Three Fiber, dnd-kit. All mounted via defineIsland().
+    </htx:component>
+  </a>
+  <a href="/encapsulation/react-query" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="React Query" description="Category 1 — bridging">
+      Client-side data fetch next to server-rendered data. The escape hatch dissolves it.
+    </htx:component>
+  </a>
+  <a href="/encapsulation/recharts" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Recharts" description="Category 2 — genuine">
+      Interactive charts next to Layer 0 stat panels. The depth is correct.
+    </htx:component>
+  </a>
+</div>
+
+<!-- Layer 5 First -->
+<h2 style="margin-bottom:0.5rem">Layer 5 First</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">Start at the React developer's home depth. Escape when the architecture gives you something depth can't.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/layer5/app" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Task Manager" description="Full Layer 5 app">
+      Components, signals, computed, effects. The React mental model. It works here.
+    </htx:component>
+  </a>
+  <a href="/layer5" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Four Escape Hatches" description="Layer 5 → Layer 0">
+      Data, forms, auth, content. Each dissolves six compensating mechanisms.
+    </htx:component>
+  </a>
+</div>
+
+<!-- Cookbook -->
+<h2 style="margin-bottom:0.5rem">Cookbook</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">11 features at the shallowest viable depth. Each states what React stack it replaces.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/cookbook/posts" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="CRUD App" description="Surface (Layer 0)">
+      List, detail, create, edit, delete. Signed mutations. Zero JavaScript.
+    </htx:component>
+  </a>
+  <a href="/cookbook/kanban" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Kanban Board" description="Wading (Layer 2)">
+      3 columns, 9 tasks, HTML5 drag. 25 lines of JavaScript.
+    </htx:component>
+  </a>
+  <a href="/cookbook/data-grid" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Data Grid" description="Wading (Layer 2)">
+      Sort, filter, 12 rows from SQLite. 30 lines of JavaScript.
+    </htx:component>
+  </a>
+  <a href="/cookbook/validated-form" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Validated Form" description="Wading (Layer 2)">
+      Client validation, optimistic submit, signed token. 40 lines.
+    </htx:component>
+  </a>
+  <a href="/cookbook/live-search" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Live Search" description="Shallows (Layer 1)">
+      Debounced filter on server-rendered data. 10 lines.
+    </htx:component>
+  </a>
+  <a href="/cookbook" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="All 11 Recipes" description="Full cookbook">
+      CRUD, search, auth, tabs, load-more, notifications, presence, and more.
+    </htx:component>
+  </a>
+</div>
+
+<!-- Reorientation -->
+<h2 style="margin-bottom:0.5rem">Reorientation Guide</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">23 React ecosystem technologies mapped to the correct PRESTO layer. Side-by-side comparisons.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/reorientation/ssr" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="SSR → Layer 0">Server rendering is the default, not a feature.</htx:component>
+  </a>
+  <a href="/reorientation/hydration" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Hydration → Absent">The problem does not arise. Scripts enhance complete documents.</htx:component>
+  </a>
+  <a href="/reorientation/build" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Bundlers → Nothing">No webpack. No Vite. Edit, save, reload.</htx:component>
+  </a>
+  <a href="/reorientation/state" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Redux → The Document">The server-rendered document IS the shared state.</htx:component>
+  </a>
+  <a href="/reorientation/security" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Route Guards → Absence">Unprovided capabilities don't exist on the client.</htx:component>
+  </a>
+  <a href="/reorientation" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="All 14 Comparisons">SSR, SSG, ISR, RSC, hydration, routing, state, forms, and more.</htx:component>
+  </a>
+</div>
+
+<!-- Unified Builder -->
+<h2 style="margin-bottom:0.5rem">Unified Builder</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">Visual editing + AI chat on one representation. Two paradigms, one file.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/editor" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Visual Builder" description="Drag + drop + AI chat">
+      Component palette, live preview, property panel, and AI assistant. All editing the same .htx source.
+    </htx:component>
+  </a>
+  <a href="/encapsulation/four-frameworks" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Four Frameworks" description="Vue + Svelte + React + Astro">
+      Five architectural styles in one HTTP response. The REST boundary encloses all.
+    </htx:component>
+  </a>
+</div>
+
+<!-- Module Kit Demo -->
+<h2 style="margin-bottom:0.5rem">Module Kit</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem;font-size:0.9rem">13 server-side modules. All active on every page of this demo.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:2.5rem">
+  <a href="/healthz" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Health Check">Uptime, memory, DB status.</htx:component>
+  </a>
+  <a href="/modules" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="All 13 Modules">Request ID, CORS, security, rate limit, cache, auth, and more.</htx:component>
+  </a>
+  <a href="/cookbook/protected" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Auth Module">Session, htx:auth, role-based rendering.</htx:component>
+  </a>
+  <a href="/blog" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Blog">Fielding annotations. 7 posts from SQLite.</htx:component>
+  </a>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:2rem 0;color:var(--ui-text-muted);font-size:0.8rem;border-top:1px solid var(--ui-border);margin-top:1rem">
+  PRESTO/TS v3 &middot; Seed v7 &middot; 22/22 conformant &middot;
+  Running on Raspberry Pi &middot;
+  <a href="https://github.com/hypermediacms/presto-ts" style="color:var(--ui-text-muted)">GitHub</a>
+</div>

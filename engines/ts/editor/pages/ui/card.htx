@@ -1,0 +1,13 @@
+<htx:props>
+title = ""
+description = ""
+</htx:props>
+<div class="ui-card">
+  <div class="ui-card-header">
+    <h3 class="ui-card-title">{{ title }}</h3>
+    <p class="ui-card-description">{{ description }}</p>
+  </div>
+  <div class="ui-card-content">
+    <htx:slot />
+  </div>
+</div>

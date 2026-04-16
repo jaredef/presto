@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 1rem; font-family: system-ui, sans-serif; }
+    .builder-hover { outline: 2px dashed #6366f1 !important; outline-offset: 2px; }
+    .builder-selected { outline: 2px solid #6366f1 !important; outline-offset: 2px; }
+    .builder-drop-zone { background: rgba(99,102,241,0.05); min-height: 40px; border: 2px dashed #c4c4cc; border-radius: 4px; margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div id="preview-content"><p style="color:#999">Drag components from the palette to start building.</p></div>
+  <script src="/js/presto-signals.js"></script>
+  <script>
+    var content = document.getElementById('preview-content');
+    var selected = null;
+
+    window.addEventListener('message', function(e) {
+      if (e.data.type === 'preview:update') {
+        content.innerHTML = e.data.html;
+        // Re-apply selection if still exists
+        if (selected) {
+          var el = content.querySelector('[data-builder-id="' + selected + '"]');
+          if (el) {
+            var h = (el.style.display === 'contents' && el.firstElementChild) ? el.firstElementChild : el;
+            h.classList.add('builder-selected');
+          }
+        }
+      }
+      // Tree node selected — highlight corresponding element
+      if (e.data.type === 'tree:select' && e.data.builderId) {
+        // Remove old selection
+        var prev = content.querySelector('.builder-selected');
+        if (prev) prev.classList.remove('builder-selected');
+        // Find the element with the builder ID
+        var target = content.querySelector('[data-builder-id="' + e.data.builderId + '"]');
+        if (target) {
+          // If the target is a display:contents wrapper (component span),
+          // highlight its first child element instead — display:contents
+          // elements don't generate a box so outline won't render on them
+          var highlightEl = target;
+          if (target.style.display === 'contents' && target.firstElementChild) {
+            highlightEl = target.firstElementChild;
+          }
+          highlightEl.classList.add('builder-selected');
+          highlightEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          selected = e.data.builderId;
+        }
+      }
+    });
+
+    function getComputedStyles(el) {
+      var cs = window.getComputedStyle(el);
+      return {
+        display: cs.display, position: cs.position, flexDirection: cs.flexDirection,
+        justifyContent: cs.justifyContent, alignItems: cs.alignItems, gap: cs.gap,
+        flexWrap: cs.flexWrap, overflow: cs.overflow,
+        width: cs.width, height: cs.height, minWidth: cs.minWidth, maxWidth: cs.maxWidth,
+        minHeight: cs.minHeight, maxHeight: cs.maxHeight,
+        marginTop: cs.marginTop, marginRight: cs.marginRight,
+        marginBottom: cs.marginBottom, marginLeft: cs.marginLeft,
+        paddingTop: cs.paddingTop, paddingRight: cs.paddingRight,
+        paddingBottom: cs.paddingBottom, paddingLeft: cs.paddingLeft,
+        fontFamily: cs.fontFamily, fontSize: cs.fontSize, fontWeight: cs.fontWeight,
+        lineHeight: cs.lineHeight, letterSpacing: cs.letterSpacing,
+        textAlign: cs.textAlign, color: cs.color, textDecoration: cs.textDecoration,
+        backgroundColor: cs.backgroundColor, opacity: cs.opacity,
+        borderTopWidth: cs.borderTopWidth, borderRightWidth: cs.borderRightWidth,
+        borderBottomWidth: cs.borderBottomWidth, borderLeftWidth: cs.borderLeftWidth,
+        borderTopColor: cs.borderTopColor, borderStyle: cs.borderStyle,
+        borderRadius: cs.borderRadius,
+        boxShadow: cs.boxShadow,
+      };
+    }
+
+    function getInlineStyles(el) {
+      var s = el.style;
+      var result = {};
+      for (var i = 0; i < s.length; i++) {
+        result[s[i]] = s.getPropertyValue(s[i]);
+      }
+      return result;
+    }
+
+    // Click to select
+    content.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Remove old selection
+      var prev = content.querySelector('.builder-selected');
+      if (prev) prev.classList.remove('builder-selected');
+
+      // Find nearest selectable element
+      var target = e.target.closest('[data-builder-id]');
+      if (target) {
+        var highlightEl = (target.style.display === 'contents' && target.firstElementChild) ? target.firstElementChild : target;
+        highlightEl.classList.add('builder-selected');
+        selected = target.dataset.builderId;
+        window.parent.postMessage({
+          type: 'canvas:select', id: selected, tag: highlightEl.tagName,
+          className: highlightEl.className.replace('builder-selected','').replace('builder-hover','').trim(),
+          computedStyles: getComputedStyles(highlightEl),
+          inlineStyles: getInlineStyles(highlightEl),
+        }, '*');
+      } else {
+        selected = null;
+        window.parent.postMessage({ type: 'canvas:deselect' }, '*');
+      }
+    });
+
+    // Inline text editing — double-click to edit, blur/Enter to commit
+    var editing = null; // the element currently being edited
+    content.addEventListener('dblclick', function(e) {
+      // Find the nearest text-bearing element
+      var target = e.target;
+      // Only allow editing on leaf text elements
+      var editable = ['H1','H2','H3','H4','H5','H6','P','SPAN','A','LI','TD','TH','LABEL','STRONG','EM','BUTTON'];
+      if (editable.indexOf(target.tagName) === -1) return;
+      // Don't re-enter if already editing
+      if (editing === target) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Store original text for revert
+      target.dataset.originalText = target.textContent;
+      target.contentEditable = 'true';
+      target.focus();
+      target.style.outline = '2px solid #6366f1';
+      target.style.outlineOffset = '2px';
+      target.style.borderRadius = '2px';
+      target.style.minWidth = '20px';
+      editing = target;
+
+      // Select all text
+      var range = document.createRange();
+      range.selectNodeContents(target);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    // Commit edit on blur
+    content.addEventListener('focusout', function(e) {
+      if (!editing) return;
+      commitEdit(editing);
+    });
+
+    // Commit on Enter (for single-line elements), Escape to cancel
+    content.addEventListener('keydown', function(e) {
+      if (!editing) return;
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        commitEdit(editing);
+      }
+      if (e.key === 'Escape') {
+        editing.textContent = editing.dataset.originalText || '';
+        finishEdit(editing);
+      }
+    });
+
+    function commitEdit(el) {
+      var newText = el.textContent.trim();
+      var originalText = el.dataset.originalText || '';
+      finishEdit(el);
+
+      if (newText === originalText) return; // No change
+
+      // Find the nearest builder-id to map back to source
+      var builderEl = el.closest('[data-builder-id]');
+      var builderId = builderEl ? builderEl.dataset.builderId : null;
+
+      // Determine what kind of text this is
+      var role = 'content'; // default: text content of an element
+      if (el.classList.contains('ui-card-title')) role = 'prop:title';
+      else if (el.classList.contains('ui-card-description')) role = 'prop:description';
+      else if (el.classList.contains('ui-label')) role = 'prop:label';
+      else if (el.classList.contains('ui-alert-title')) role = 'prop:title';
+      else if (el.classList.contains('ui-badge')) role = 'slot';
+
+      window.parent.postMessage({
+        type: 'canvas:text-edit',
+        builderId: builderId,
+        role: role,
+        oldText: originalText,
+        newText: newText,
+        tagName: el.tagName,
+      }, '*');
+    }
+
+    function finishEdit(el) {
+      el.contentEditable = 'false';
+      el.style.outline = '';
+      el.style.outlineOffset = '';
+      el.style.borderRadius = '';
+      delete el.dataset.originalText;
+      editing = null;
+    }
+
+    // Hover highlight
+    content.addEventListener('mouseover', function(e) {
+      var target = e.target.closest('[data-builder-id]');
+      if (target && !target.classList.contains('builder-selected')) {
+        target.classList.add('builder-hover');
+      }
+    });
+    content.addEventListener('mouseout', function(e) {
+      var target = e.target.closest('[data-builder-id]');
+      if (target) target.classList.remove('builder-hover');
+    });
+
+    // Drop target
+    content.addEventListener('dragover', function(e) { e.preventDefault(); });
+    content.addEventListener('drop', function(e) {
+      e.preventDefault();
+      var data = e.dataTransfer.getData('text/plain');
+      if (data) {
+        window.parent.postMessage({ type: 'canvas:drop', data: data }, '*');
+      }
+    });
+  </script>
+</body>
+</html>

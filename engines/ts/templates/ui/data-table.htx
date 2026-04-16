@@ -1,0 +1,33 @@
+<htx:props>
+type = ""
+where = ""
+order = "id desc"
+limit = "10"
+columns = ""
+</htx:props>
+<div class="ui-data-table" data-type="{{ type }}" data-columns="{{ columns }}">
+  <htx:data type="{{ type }}" where="{{ where }}" order="{{ order }}" limit="{{ limit }}" as="tableRows" />
+  <div class="ui-table-wrapper">
+    <table class="ui-table">
+      <thead><tr></tr></thead>
+      <tbody>
+        <htx:each items="tableRows" as="row">
+        <tr>
+          <htx:slot />
+        </tr>
+        <htx:empty />
+        <tr><td colspan="100" class="ui-table-empty">No records found.</td></tr>
+        </htx:each>
+      </tbody>
+    </table>
+  </div>
+</div>
+<htx:script>
+  var cols = el.dataset.columns.split(',').map(function(c) { return c.trim(); });
+  var headerRow = el.querySelector('thead tr');
+  cols.forEach(function(col) {
+    var th = document.createElement('th');
+    th.textContent = col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ');
+    headerRow.appendChild(th);
+  });
+</htx:script>

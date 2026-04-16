@@ -1,0 +1,104 @@
+/* Save as Component dialog */
+
+.sac-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.sac-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.sac-field {
+  margin-bottom: 1rem;
+}
+.sac-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.35rem;
+}
+.sac-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.sac-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+.sac-prop-row {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+  align-items: center;
+}
+.sac-input-sm {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+.sac-input-sm:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+.sac-remove-prop {
+  border: none;
+  background: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.4rem;
+}
+.sac-add-prop {
+  border: 1px dashed #ccc;
+  background: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+.sac-add-prop:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+.sac-preview {
+  margin-bottom: 1rem;
+}
+.sac-code {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+.sac-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

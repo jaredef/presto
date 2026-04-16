@@ -1,0 +1,9 @@
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="post_list" />
+<htx:each items="post_list" as="post">
+<article>
+  <h1><htx:v>post.title</htx:v></h1>
+  <div><htx:v raw>post.body</htx:v></div>
+</article>
+<htx:empty />
+<p>Not found.</p>
+</htx:each>

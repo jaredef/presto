@@ -1,0 +1,32 @@
+<htx:props>
+tabs = ""
+active = "0"
+</htx:props>
+<div class="ui-tabs" data-active="{{ active }}">
+  <div class="ui-tabs-list" role="tablist">
+    <htx:slot />
+  </div>
+</div>
+<htx:script>
+  var tabList = el.querySelector('.ui-tabs-list');
+  var buttons = tabList.querySelectorAll('[role="tab"]');
+  var panels = el.querySelectorAll('[role="tabpanel"]');
+  var activeIdx = parseInt(el.dataset.active) || 0;
+  function activate(idx) {
+    buttons.forEach(function(b, i) {
+      b.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      b.classList.toggle('active', i === idx);
+    });
+    panels.forEach(function(p, i) {
+      p.style.display = i === idx ? '' : 'none';
+    });
+  }
+  buttons.forEach(function(b, i) {
+    b.addEventListener('click', function() { activate(i); });
+    b.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight') { activate((i + 1) % buttons.length); buttons[(i + 1) % buttons.length].focus(); }
+      if (e.key === 'ArrowLeft') { activate((i - 1 + buttons.length) % buttons.length); buttons[(i - 1 + buttons.length) % buttons.length].focus(); }
+    });
+  });
+  activate(activeIdx);
+</htx:script>

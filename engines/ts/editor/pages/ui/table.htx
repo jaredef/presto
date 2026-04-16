@@ -1,0 +1,8 @@
+<htx:props>
+striped = ""
+</htx:props>
+<div class="ui-table-wrapper">
+  <table class="ui-table {{ striped }}">
+    <htx:slot />
+  </table>
+</div>

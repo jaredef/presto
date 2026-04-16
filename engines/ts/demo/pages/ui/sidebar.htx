@@ -1,0 +1,6 @@
+<htx:props>
+width = "240px"
+</htx:props>
+<aside class="ui-sidebar" style="width:{{ width }}">
+  <htx:slot />
+</aside>

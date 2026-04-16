@@ -1,0 +1,9 @@
+<htx:data type="page" where="status = 'published'" order="id asc" as="pages" />
+
+<h1>Pages</h1>
+<htx:each items="pages" as="page">
+<div class="page-item">
+  <h2><htx:v>page.title</htx:v></h2>
+  <p><htx:v>page.body</htx:v></p>
+</div>
+</htx:each>

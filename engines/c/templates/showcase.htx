@@ -1,0 +1,73 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="10" as="posts" />
+<htx:grant type="websocket" as="ws_token" />
+<htx:action name="delete" type="post" record="42" />
+
+<section class="section">
+  <h2 class="section-title">Directive Showcase</h2>
+  <p class="section-subtitle">Every htx: directive exercised on a single page</p>
+
+  <div class="card-grid">
+    <htx:each items="posts" as="post">
+    <div class="card">
+      <h3><htx:v>post.title</htx:v></h3>
+      <p><htx:v>post.body</htx:v></p>
+      <div class="card-meta">
+        slug: <htx:v>post.slug</htx:v> &middot; status: <htx:v>post.status | uppercase</htx:v>
+      </div>
+    </div>
+    </htx:each>
+    <htx:empty>
+    <div class="card"><p>No published posts.</p></div>
+    </htx:empty>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Conditionals</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>htx:auth</h3>
+      <htx:auth><p>Authenticated as <htx:v>auth.user.name</htx:v></p></htx:auth>
+      <htx:unauth><p>Not authenticated &mdash; showing guest view</p></htx:unauth>
+    </div>
+    <div class="card">
+      <h3>htx:if</h3>
+      <htx:if test="posts">
+      <p>Posts array is truthy (has items)</p>
+      </htx:if>
+      <htx:else>
+      <p>No posts</p>
+      </htx:else>
+    </div>
+    <div class="card">
+      <h3>htx:grant</h3>
+      <htx:if test="ws_token">
+      <div class="token-display"><htx:v>ws_token</htx:v></div>
+      </htx:if>
+      <htx:else>
+      <p>No grant provider</p>
+      </htx:else>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Mutation Token</h2>
+  <p class="section-subtitle">htx:action prepared a signed delete token for post 42</p>
+  <htx:if test="$actions.delete">
+  <div class="token-display"><htx:v>$actions.delete</htx:v></div>
+  </htx:if>
+  <htx:else>
+  <div class="token-display">Action token generated (check resolved HTML source)</div>
+  </htx:else>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Literal Block</h2>
+  <p class="section-subtitle">htx:raw content passes through the engine untouched</p>
+  <div class="card">
+    <htx:raw><code>&lt;htx:v&gt;this.is.not.resolved&lt;/htx:v&gt;</code> &mdash; preserved literally</htx:raw>
+  </div>
+</section>
+
+<htx:include src="/partials/nav.htx" />

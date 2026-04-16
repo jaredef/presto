@@ -1,0 +1,29 @@
+<htx:layout none />
+<htx:let title="Showcase" />
+<htx:data type="page" where="status = 'published'" limit="2" as="items" />
+
+<h1><htx:v>title</htx:v></h1>
+
+<htx:include src="/partials/nav.htx" />
+
+<htx:component src="/components/card.htx" title="Demo Card">
+  <p>Slot content</p>
+</htx:component>
+
+<htx:each items="items" as="item">
+<div><htx:v>item.title</htx:v> — <htx:v>item.body</htx:v></div>
+</htx:each>
+
+<htx:if test="title">
+<p>Title is set</p>
+</htx:if>
+<htx:else>
+<p>No title</p>
+</htx:else>
+
+<htx:auth><p>Logged in</p></htx:auth>
+<htx:unauth><p>Please sign in</p></htx:unauth>
+
+<htx:raw><htx:v>not.evaluated</htx:v></htx:raw>
+
+<script>var x = "{htx:title}";</script>

@@ -1,0 +1,42 @@
+{
+  "three-scene": {
+    "bundle": "/js/islands/three-scene.js",
+    "size": 4835
+  },
+  "dndkit-sortable": {
+    "bundle": "/js/islands/dndkit-sortable.js",
+    "size": 439496
+  },
+  "recharts-dashboard": {
+    "bundle": "/js/islands/recharts-dashboard.js",
+    "size": 835945
+  },
+  "vue-dashboard": {
+    "bundle": "/js/islands/vue-dashboard.js",
+    "size": 95213
+  },
+  "full-spa": {
+    "bundle": "/js/islands/full-spa.js",
+    "size": 402153
+  },
+  "react-query-posts": {
+    "bundle": "/js/islands/react-query-posts.js",
+    "size": 437434
+  },
+  "leaflet-map": {
+    "bundle": "/js/islands/leaflet-map.js",
+    "size": 550989
+  },
+  "tiptap-editor": {
+    "bundle": "/js/islands/tiptap-editor.js",
+    "size": 781311
+  },
+  "svelte-form": {
+    "bundle": "/js/islands/svelte-form.js",
+    "size": 4102
+  },
+  "codemirror-editor": {
+    "bundle": "/js/islands/codemirror-editor.js",
+    "size": 915894
+  }
+}

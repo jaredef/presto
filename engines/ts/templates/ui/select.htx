@@ -1,0 +1,13 @@
+<htx:props>
+label = ""
+name = ""
+options = ""
+value = ""
+required = ""
+</htx:props>
+<div class="ui-field">
+  <label class="ui-label">{{ label }}</label>
+  <select name="{{ name }}" class="ui-select" {{ required }}>
+    <htx:slot />
+  </select>
+</div>

@@ -1,0 +1,76 @@
+/* PRESTO Builder — Editor Styles */
+
+.editor-body { margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; background: #f8f8fa; }
+
+/* Projects page */
+.editor-projects { max-width: 800px; margin: 3rem auto; padding: 0 1.5rem; }
+.editor-projects-header { margin-bottom: 2rem; }
+.editor-projects-header h1 { margin: 0 0 0.25rem; }
+.editor-projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.project-card { text-decoration: none; color: inherit; display: block; }
+.project-card:hover .ui-card { border-color: var(--ui-primary); }
+
+/* Toolbar */
+.editor-toolbar {
+  height: 48px; background: #fff; border-bottom: 1px solid var(--ui-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1rem; flex-shrink: 0; z-index: 100;
+}
+.editor-toolbar-left, .editor-toolbar-center, .editor-toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+.editor-back { text-decoration: none; color: var(--ui-text-muted); font-size: 1.2rem; padding: 0 0.5rem; }
+.editor-page-name { font-weight: 600; font-size: 0.95rem; }
+.editor-save-status { font-size: 0.75rem; color: var(--ui-text-muted); font-family: var(--ui-mono, monospace); }
+
+/* Grid */
+.editor-grid {
+  flex: 1; display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  overflow: hidden;
+}
+
+/* Palette */
+.editor-palette {
+  background: #fff; border-right: 1px solid var(--ui-border);
+  overflow-y: auto; font-size: 0.85rem;
+}
+.editor-palette-header { padding: 0.75rem 1rem; font-weight: 600; font-size: 0.8rem; color: var(--ui-text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--ui-border); }
+.editor-palette-section { padding: 0.5rem 0; }
+.editor-palette-category { padding: 0.25rem 1rem; font-size: 0.7rem; font-weight: 600; color: var(--ui-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.palette-item {
+  padding: 0.4rem 1rem; cursor: grab; transition: background 0.1s;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.palette-item:hover { background: var(--ui-bg-muted); }
+.palette-item:active { cursor: grabbing; }
+.palette-item::before { content: "⠿"; color: var(--ui-text-muted); font-size: 0.7rem; }
+
+/* Canvas */
+.editor-canvas-container { position: relative; background: #e5e5e8; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.editor-canvas {
+  width: 100%; height: 100%; border: none; background: #fff;
+  transition: width 0.2s, height 0.2s;
+}
+.editor-canvas.tablet { width: 768px; height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+.editor-canvas.mobile { width: 375px; height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+.editor-source {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  font-family: var(--ui-mono, monospace); font-size: 0.85rem;
+  padding: 1rem; border: none; resize: none; background: #1e1e2e; color: #cdd6f4;
+  line-height: 1.6; tab-size: 2;
+}
+
+/* Properties */
+.editor-properties {
+  background: #fff; border-left: 1px solid var(--ui-border);
+  overflow-y: auto; font-size: 0.85rem;
+}
+.editor-properties-header { padding: 0.75rem 1rem; font-weight: 600; font-size: 0.8rem; color: var(--ui-text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--ui-border); }
+.editor-properties-content { padding: 0.5rem; }
+.prop-field { padding: 0.5rem; }
+.prop-field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--ui-text-muted); margin-bottom: 0.25rem; }
+.prop-field input, .prop-field select, .prop-field textarea {
+  width: 100%; padding: 0.35rem 0.5rem; font-size: 0.8rem;
+  border: 1px solid var(--ui-border); border-radius: var(--ui-radius);
+  background: var(--ui-bg); font-family: inherit;
+}
+.prop-field textarea { min-height: 60px; resize: vertical; }

@@ -1,0 +1,13 @@
+<htx:props>
+variant = "default"
+size = "md"
+type = "button"
+disabled = ""
+href = ""
+</htx:props>
+<htx:if test="__has_href">
+<a href="{{ href }}" class="ui-btn ui-btn-{{ variant }} ui-btn-{{ size }}"><htx:slot /></a>
+</htx:if>
+<htx:else>
+<button type="{{ type }}" class="ui-btn ui-btn-{{ variant }} ui-btn-{{ size }}" {{ disabled }}><htx:slot /></button>
+</htx:else>

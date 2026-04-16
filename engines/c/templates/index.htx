@@ -1,0 +1,126 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+<htx:grant type="websocket" as="ws_token" />
+<htx:let engine_name="PRESTO/C" />
+
+<!-- Hero with WebGL torus -->
+<section class="hero">
+  <canvas id="hero-canvas" class="hero-canvas"></canvas>
+  <div class="hero-content">
+    <h1 class="hero-title">
+      <span class="accent"><htx:v>engine_name</htx:v></span><br>
+      htxlang Engine
+    </h1>
+    <p class="hero-subtitle">
+      A conformant htxlang engine in 3,122 lines of C.<br>
+      HTML in. Pure HTML out. No runtime required.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">22</div>
+        <div class="stat-label">Tests Passing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3.1k</div>
+        <div class="stat-label">Lines of C</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">11MB</div>
+        <div class="stat-label">Memory</div>
+      </div>
+    </div>
+    <span class="hero-badge">Layer 2 &mdash; Server HTML + Scoped Scripts</span>
+  </div>
+</section>
+
+<!-- Posts from SQLite via htx:data -->
+<section class="section">
+  <h2 class="section-title">Content from SQLite</h2>
+  <p class="section-subtitle">Queried via htx:data, rendered by the 22-stage pipeline</p>
+  <div class="card-grid">
+    <htx:each items="posts" as="post">
+    <div class="card">
+      <h3><htx:v>post.title</htx:v></h3>
+      <p><htx:v>post.body</htx:v></p>
+      <div class="card-meta">
+        /blog/<htx:v>post.slug</htx:v> &middot; <htx:v>post.status | capitalize</htx:v>
+      </div>
+    </div>
+    </htx:each>
+    <htx:empty>
+    <div class="card"><p>No posts found.</p></div>
+    </htx:empty>
+  </div>
+</section>
+
+<!-- 16 Directives -->
+<section class="section">
+  <h2 class="section-title">16 Directives</h2>
+  <p class="section-subtitle">The complete htx: namespace &mdash; server territory within HTML</p>
+  <div class="directive-grid">
+    <div class="directive"><code>&lt;htx:v&gt;</code><div class="desc">Value output (escaped)</div></div>
+    <div class="directive"><code>{htx:path}</code><div class="desc">Attribute binding</div></div>
+    <div class="directive"><code>&lt;htx:data&gt;</code><div class="desc">Data query</div></div>
+    <div class="directive"><code>&lt;htx:each&gt;</code><div class="desc">Iteration</div></div>
+    <div class="directive"><code>&lt;htx:if&gt;</code><div class="desc">Conditional</div></div>
+    <div class="directive"><code>&lt;htx:let&gt;</code><div class="desc">Variable binding</div></div>
+    <div class="directive"><code>&lt;htx:include&gt;</code><div class="desc">Partial inclusion</div></div>
+    <div class="directive"><code>&lt;htx:component&gt;</code><div class="desc">Composition</div></div>
+    <div class="directive"><code>&lt;htx:props&gt;</code><div class="desc">Component defaults</div></div>
+    <div class="directive"><code>&lt;htx:slot&gt;</code><div class="desc">Slot projection</div></div>
+    <div class="directive"><code>&lt;htx:script&gt;</code><div class="desc">Server-mediated script</div></div>
+    <div class="directive"><code>&lt;htx:grant&gt;</code><div class="desc">Capability grant</div></div>
+    <div class="directive"><code>&lt;htx:action&gt;</code><div class="desc">Mutation token</div></div>
+    <div class="directive"><code>&lt;htx:auth&gt;</code><div class="desc">Auth conditional</div></div>
+    <div class="directive"><code>&lt;htx:layout&gt;</code><div class="desc">Layout override</div></div>
+    <div class="directive"><code>&lt;htx:raw&gt;</code><div class="desc">Literal block</div></div>
+  </div>
+</section>
+
+<!-- Grant token demo -->
+<section class="section">
+  <h2 class="section-title">Live Grant Token</h2>
+  <p class="section-subtitle">htx:grant materialized a signed WebSocket credential into this page</p>
+  <htx:if test="ws_token">
+  <div class="token-display"><htx:v>ws_token</htx:v></div>
+  </htx:if>
+  <htx:else>
+  <div class="token-display">Grant not available (no provider registered)</div>
+  </htx:else>
+</section>
+
+<!-- Pipeline -->
+<section class="section">
+  <h2 class="section-title">22-Stage Pipeline</h2>
+  <p class="section-subtitle">Every request passes through this resolution sequence</p>
+  <div class="pipeline">
+    <span class="stage-active">1. Static files</span> &rarr;
+    2. Channel API &rarr;
+    3. Middleware &rarr;
+    <span class="stage-active">4. Context providers</span> &rarr;
+    5. Pre-layout processors &rarr;
+    <span class="stage-active">6. Includes</span> &rarr;
+    <span class="stage-active">7. Components</span> &rarr;
+    8. Script extraction &rarr;
+    <span class="stage-active">9. htx:let</span> &rarr;
+    <span class="stage-active">10. htx:data</span> &rarr;
+    <span class="stage-active">11. htx:grant</span> &rarr;
+    12. htx:action &rarr;
+    13. Auth/unauth &rarr;
+    <span class="stage-active">14. Control flow</span> &rarr;
+    <span class="stage-active">15. Expressions</span> &rarr;
+    15b. Layout extract &rarr;
+    16. Strip directives &rarr;
+    17. Post-layout processors &rarr;
+    <span class="stage-active">18. Layout wrap</span> &rarr;
+    19. Post-layout pass &rarr;
+    20. Script injection &rarr;
+    21. Final expressions &rarr;
+    22. Cleanup
+  </div>
+</section>
+
+<footer class="site-footer">
+  PRESTO/C &mdash; Conformant htxlang engine &mdash; 22/22 tests &mdash; Seed v7
+</footer>
+
+<script src="/js/toroid.js"></script>

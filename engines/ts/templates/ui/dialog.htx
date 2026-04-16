@@ -1,0 +1,30 @@
+<htx:props>
+trigger = "Open"
+title = ""
+description = ""
+</htx:props>
+<div class="ui-dialog-root">
+  <button class="ui-btn ui-btn-outline ui-btn-md ui-dialog-trigger">{{ trigger }}</button>
+  <div class="ui-dialog-overlay" style="display:none">
+    <div class="ui-dialog-content" role="dialog" aria-modal="true">
+      <div class="ui-dialog-header">
+        <h3 class="ui-dialog-title">{{ title }}</h3>
+        <p class="ui-dialog-description">{{ description }}</p>
+      </div>
+      <div class="ui-dialog-body"><htx:slot /></div>
+      <button class="ui-dialog-close" aria-label="Close">&times;</button>
+    </div>
+  </div>
+</div>
+<htx:script>
+  var overlay = el.querySelector('.ui-dialog-overlay');
+  var trigger = el.querySelector('.ui-dialog-trigger');
+  var closeBtn = el.querySelector('.ui-dialog-close');
+  var content = el.querySelector('.ui-dialog-content');
+  function open() { overlay.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  function close() { overlay.style.display = 'none'; document.body.style.overflow = ''; }
+  trigger.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && overlay.style.display !== 'none') close(); });
+</htx:script>

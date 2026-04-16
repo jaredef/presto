@@ -1,0 +1,22 @@
+<!-- Layer 0: Detail page with slug-based lookup.
+     htx:data resolves a single record from the URL param.
+     Escape: add inline editing via htx:script (Layer 2). -->
+
+<htx:data type="article" where="slug = '{htx:params.slug}'" limit="1" as="item_list" />
+<htx:each items="item_list" as="item">
+<article class="app-section" style="max-width:700px">
+  <h1><htx:v>item.title</htx:v></h1>
+  <p><strong>Body:</strong> <htx:v>item.body</htx:v></p>
+  <p><strong>Status:</strong> <htx:v>item.status</htx:v></p>
+  <div style="margin-top:2rem">
+    <a href="/article/{htx:item.slug}/edit" class="ui-btn ui-btn-outline ui-btn-sm">Edit</a>
+    <a href="/article/{htx:item.slug}/delete" class="ui-btn ui-btn-destructive ui-btn-sm" style="margin-left:0.5rem">Delete</a>
+  </div>
+  <a href="/article" style="display:inline-block;margin-top:1.5rem">&larr; Back to articles</a>
+</article>
+<htx:empty />
+<section class="app-section">
+  <h1>Article not found</h1>
+  <a href="/article">&larr; Back to articles</a>
+</section>
+</htx:each>

@@ -1,0 +1,53 @@
+<h1>Hydration → Does Not Exist</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">The problem hydration solves does not arise when the document is complete.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>React Hydration</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// The server renders HTML.
+// The client re-renders to attach events.
+hydrateRoot(
+  document.getElementById('root'),
+  &lt;App /&gt;
+);
+// If server and client output differ:
+// "Hydration mismatch" error
+// "Uncanny valley" before hydration completes
+// Page looks interactive but isn't</code></pre>
+    <htx:component src="/ui/alert.htx" variant="warning" title="Failure modes">
+      Hydration mismatches. Uncanny valley. Dual rendering environments. The server and client compete to own the DOM.
+    </htx:component>
+  </div>
+  <div>
+    <h3>PRESTO</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;!-- The page is complete HTML. --&gt;
+&lt;!-- Links work. Forms submit. --&gt;
+&lt;!-- Then scripts enhance: --&gt;
+
+&lt;htx:script&gt;
+  // This runs AFTER the document is complete.
+  // It enhances. It does not reclaim.
+  // No reconciliation. No mismatch possible.
+  el.addEventListener('click', function() {
+    el.classList.toggle('active');
+  });
+&lt;/htx:script&gt;</code></pre>
+    <htx:component src="/ui/alert.htx" variant="success" title="No hydration">
+      There is no hydration step. The concept is absent. The page is interactive when it arrives. Scripts enhance what already works.
+    </htx:component>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: These components are interactive with no hydration</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+  <htx:component src="/ui/card.htx" title="Dialog (no hydration)">
+    <htx:component src="/ui/dialog.htx" trigger="Open" title="No Hydration" description="This dialog works immediately">
+      <p>No reconciliation needed. The script enhances a complete document.</p>
+    </htx:component>
+  </htx:component>
+  <htx:component src="/ui/card.htx" title="Slider (no hydration)">
+    <htx:component src="/ui/slider.htx" label="Interactive" min="0" max="100" value="42" name="demo" />
+  </htx:component>
+</div>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

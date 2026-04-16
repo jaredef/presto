@@ -1,0 +1,58 @@
+<h1>Server Actions → htx:action</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Signed mutation tokens. Standard POST. No RPC. No "use server".</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>React Server Actions</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>'use server';
+
+async function createPost(formData: FormData) {
+  const title = formData.get('title');
+  const body = formData.get('body');
+  await db.insert('posts', { title, body });
+  redirect('/posts');
+}
+
+// Client component:
+&lt;form action={createPost}&gt;
+  &lt;input name="title" /&gt;
+  &lt;textarea name="body" /&gt;
+  &lt;button type="submit"&gt;Create&lt;/button&gt;
+&lt;/form&gt;
+
+// "use server" creates an RPC endpoint
+// Serialization rules apply
+// Error handling is framework-specific</code></pre>
+  </div>
+  <div>
+    <h3>PRESTO (htx:action)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;htx:component src="/ui/form.htx"
+  action="create" type="post"&gt;
+  &lt;htx:component src="/ui/input.htx"
+    label="Title" name="title" /&gt;
+  &lt;htx:component src="/ui/textarea.htx"
+    label="Body" name="body" /&gt;
+&lt;/htx:component&gt;
+
+&lt;!-- The engine:
+  1. Signs an HMAC-SHA256 action token
+  2. Injects it as a hidden field
+  3. POST verifies the token
+  4. Executes adapter.create()
+  5. Returns JSON
+
+  Standard HTML form. Standard POST.
+  No "use server". No RPC. No serialization. --&gt;</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">Live: Form with signed mutation token</h3>
+<htx:component src="/ui/form.htx" action="create" type="post">
+  <htx:component src="/ui/input.htx" label="Title" name="title" placeholder="New post title" required="required" />
+  <htx:component src="/ui/input.htx" label="Slug" name="slug" placeholder="url-slug" required="required" />
+  <htx:component src="/ui/textarea.htx" label="Body" name="body" placeholder="Post content" rows="3" />
+  <input type="hidden" name="status" value="published" />
+</htx:component>
+<p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">Inspect the hidden field — the action token is HMAC-SHA256 signed.</p>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

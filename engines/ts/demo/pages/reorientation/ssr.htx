@@ -1,0 +1,65 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+
+<h1>SSR → Layer 0</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Server rendering is not a feature. It is the default.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+  <div>
+    <h3>React (Next.js SSR)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// pages/posts.tsx
+export async function getServerSideProps() {
+  const posts = await db.query(
+    'SELECT * FROM posts WHERE status = ?',
+    ['published']
+  );
+  return { props: { posts } };
+}
+
+export default function Posts({ posts }) {
+  return (
+    &lt;div&gt;
+      {posts.map(p =&gt; (
+        &lt;Card key={p.id} title={p.title}&gt;
+          {p.body}
+        &lt;/Card&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+    <htx:component src="/ui/alert.htx" variant="warning" title="Complexity">
+      Dual execution environments. Serialization constraints. Mental model split: which code runs where?
+    </htx:component>
+  </div>
+
+  <div>
+    <h3>PRESTO (Layer 0)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>&lt;!-- pages/posts.htx --&gt;
+&lt;htx:data type="post"
+  where="status = 'published'"
+  order="id desc"
+  as="posts" /&gt;
+
+&lt;htx:each items="posts" as="post"&gt;
+  &lt;htx:component src="/ui/card.htx"
+    title="{htx:post.title}"&gt;
+    &lt;p&gt;&lt;htx:v&gt;post.body&lt;/htx:v&gt;&lt;/p&gt;
+  &lt;/htx:component&gt;
+&lt;/htx:each&gt;</code></pre>
+    <htx:component src="/ui/alert.htx" variant="success" title="No SSR needed">
+      Server rendering is the baseline. The template is the page. One environment. One mental model.
+    </htx:component>
+  </div>
+
+</div>
+
+<h3 style="margin-top:2rem">Live Result (this IS the server-rendered output)</h3>
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <htx:component src="/ui/card.htx" title="{htx:post.title}">
+    <p><htx:v>post.body</htx:v></p>
+  </htx:component>
+  </htx:each>
+</div>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

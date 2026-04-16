@@ -1,0 +1,73 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+
+<h1>Escape 1: Data Doesn't Need the Client</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Your app fetches data client-side. The escape: let the server resolve it.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3 style="color:var(--ui-destructive)">At Depth (Layer 5)</h3>
+    <p style="font-size:0.85rem;color:var(--ui-text-muted);margin-bottom:1rem">The way you're doing it now:</p>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>function PostList() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/posts')
+      .then(r => r.json())
+      .then(setPosts)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return &lt;Spinner /&gt;;
+  if (error) return &lt;Error msg={error} /&gt;;
+
+  return posts.map(p =>
+    &lt;Card key={p.id} title={p.title}&gt;
+      {p.body}
+    &lt;/Card&gt;
+  );
+}</code></pre>
+    <p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">Requires: API route, fetch, useState x3, useEffect, loading component, error component. The client does the work the server already did.</p>
+  </div>
+
+  <div>
+    <h3 style="color:var(--ui-success)">Surfaced (Layer 0)</h3>
+    <p style="font-size:0.85rem;color:var(--ui-text-muted);margin-bottom:1rem">The escape — let the server handle it:</p>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>&lt;htx:data type="post"
+  where="status = 'published'"
+  order="id desc"
+  as="posts" /&gt;
+
+&lt;htx:each items="posts" as="post"&gt;
+  &lt;htx:component src="/ui/card.htx"
+    title="{htx:post.title}"&gt;
+    &lt;htx:v&gt;post.body&lt;/htx:v&gt;
+  &lt;/htx:component&gt;
+&lt;/htx:each&gt;</code></pre>
+    <p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">Zero JavaScript. The data is in the HTML. No loading state because there's nothing to wait for.</p>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">What dissolved</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.85rem">
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">API route (/api/posts)</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">useState for posts, loading, error</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">useEffect with fetch</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Loading spinner component</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Error boundary component</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">React Query / SWR cache</div>
+</div>
+
+<h3 style="margin-top:2rem">Live: The surfaced version</h3>
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <htx:component src="/ui/card.htx" title="{htx:post.title}">
+    <p><htx:v>post.body</htx:v></p>
+  </htx:component>
+  </htx:each>
+</div>
+<p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">This data came from SQLite. The engine resolved it. The HTML arrived complete. Zero JavaScript.</p>
+
+<p style="margin-top:1.5rem"><a href="/layer5">&larr; Back to Layer 5 First</a></p>

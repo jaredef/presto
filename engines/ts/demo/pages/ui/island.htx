@@ -1,0 +1,51 @@
+<htx:props>
+name = ""
+</htx:props>
+<div data-island="{{ name }}" id="island-{{ name }}">
+  <htx:slot />
+</div>
+<htx:script>
+  var name = el.dataset.island;
+  if (!name) return;
+  var registry = window.__prestoIslands || {};
+
+  function tryMount() {
+    var island = registry[name];
+    if (!island) return false;
+    if (el.__islandMounted) return true;
+    var props = {};
+    // Read data bridge
+    var dataEl = document.getElementById('island-data-' + name);
+    if (dataEl) {
+      try { props.data = JSON.parse(dataEl.content ? dataEl.content.textContent : dataEl.textContent || '[]'); } catch(e) {}
+    }
+    // Read token bridge
+    var tokenEl = document.getElementById('island-token-' + name);
+    if (tokenEl && tokenEl.value) { props.token = tokenEl.value; }
+    // Read channel bridge
+    var channelEl = document.getElementById('island-channel-' + name);
+    if (channelEl && channelEl.value) { props.channel = channelEl.value; }
+    island.mount(el, props);
+    el.__islandMounted = true;
+    return true;
+  }
+
+  // If bundle already loaded, mount now
+  if (registry[name]) {
+    tryMount();
+  } else {
+    // Load the bundle
+    var script = document.createElement('script');
+    script.type = 'module';
+    script.src = '/js/islands/' + name + '.js';
+    script.onload = function() {
+      // defineIsland() may have already auto-mounted, but try again
+      registry = window.__prestoIslands || {};
+      tryMount();
+    };
+    script.onerror = function() {
+      console.warn('Island bundle failed to load: ' + name);
+    };
+    document.head.appendChild(script);
+  }
+</htx:script>

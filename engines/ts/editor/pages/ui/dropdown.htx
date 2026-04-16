@@ -1,0 +1,22 @@
+<htx:props>
+trigger = "Menu"
+align = "left"
+</htx:props>
+<div class="ui-dropdown">
+  <button class="ui-btn ui-btn-outline ui-btn-md ui-dropdown-trigger">{{ trigger }}</button>
+  <div class="ui-dropdown-content" style="display:none" data-align="{{ align }}">
+    <htx:slot />
+  </div>
+</div>
+<htx:script>
+  var btn = el.querySelector('.ui-dropdown-trigger');
+  var menu = el.querySelector('.ui-dropdown-content');
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    menu.style.display = menu.style.display === 'none' ? '' : 'none';
+  });
+  document.addEventListener('click', function() { menu.style.display = 'none'; });
+  menu.addEventListener('click', function(e) {
+    if (e.target.closest('.ui-dropdown-item')) menu.style.display = 'none';
+  });
+</htx:script>

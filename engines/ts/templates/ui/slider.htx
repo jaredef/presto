@@ -1,0 +1,17 @@
+<htx:props>
+min = "0"
+max = "100"
+value = "50"
+step = "1"
+name = ""
+label = ""
+</htx:props>
+<div class="ui-slider-field">
+  <label class="ui-label">{{ label }} <span class="ui-slider-value">{{ value }}</span></label>
+  <input type="range" name="{{ name }}" min="{{ min }}" max="{{ max }}" value="{{ value }}" step="{{ step }}" class="ui-slider" />
+</div>
+<htx:script>
+  var slider = el.querySelector('.ui-slider');
+  var display = el.querySelector('.ui-slider-value');
+  slider.addEventListener('input', function() { display.textContent = slider.value; });
+</htx:script>

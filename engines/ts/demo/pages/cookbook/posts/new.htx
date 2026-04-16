@@ -1,0 +1,20 @@
+<!-- SURFACE (Layer 0): Create form. Zero JavaScript.
+     Replaces: React Hook Form + Server Actions + "use server" + validation library.
+     htx:action signs an HMAC token. Standard POST. No RPC. -->
+
+<h1>New Post</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Form with signed mutation token. Zero client JavaScript.</p>
+
+<div style="max-width:600px">
+  <htx:component src="/ui/form.htx" action="create" type="post">
+    <htx:component src="/ui/input.htx" label="Title" name="title" required="required" placeholder="Post title" />
+    <htx:component src="/ui/input.htx" label="Slug" name="slug" required="required" placeholder="url-slug" />
+    <htx:component src="/ui/textarea.htx" label="Body" name="body" rows="6" placeholder="Write your post..." />
+    <htx:component src="/ui/select.htx" label="Status" name="status">
+      <option value="draft">Draft</option>
+      <option value="published">Published</option>
+    </htx:component>
+  </htx:component>
+</div>
+
+<p style="margin-top:1rem"><a href="/cookbook/posts">&larr; Back to posts</a></p>

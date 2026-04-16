@@ -1,0 +1,61 @@
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+
+<h1>Escape 4: Content Pages Don't Need React</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Your app renders blog posts with React. The escape: they're HTML.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3 style="color:var(--ui-destructive)">At Depth (Layer 5)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>// A blog post rendered with React:
+// - 200KB React + ReactDOM runtime
+// - SSR for initial HTML
+// - Hydration to attach event listeners
+//   (which blog post needs event listeners?)
+// - Code splitting per route
+// - Suspense boundary with loading state
+// - getServerSideProps for data
+//
+// All this for a page that is...
+// static text with a title and a date.</code></pre>
+    <p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">The entire React machinery executes to display text. SSR renders it. Hydration claims it. The page loads JavaScript to display a paragraph.</p>
+  </div>
+
+  <div>
+    <h3 style="color:var(--ui-success)">Surfaced (Layer 0)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>&lt;htx:data type="post"
+  where="slug = '{htx:params.slug}'"
+  limit="1" as="items" /&gt;
+
+&lt;htx:each items="items" as="post"&gt;
+  &lt;h1&gt;&lt;htx:v&gt;post.title&lt;/htx:v&gt;&lt;/h1&gt;
+  &lt;div&gt;&lt;htx:v raw&gt;post.body&lt;/htx:v&gt;&lt;/div&gt;
+&lt;/htx:each&gt;
+
+&lt;!-- That's it. HTML. No React runtime.
+     No hydration. No SSR configuration.
+     No bundle. The page IS the HTML. --&gt;</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">What dissolved</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;font-size:0.85rem">
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">React runtime (200KB)</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">SSR configuration</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Hydration pass</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Code splitting</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Suspense boundary</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">getServerSideProps</div>
+</div>
+
+<h3 style="margin-top:2rem">Live: These posts are HTML</h3>
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <htx:component src="/ui/card.htx" title="{htx:post.title}">
+    <p><htx:v>post.body</htx:v></p>
+    <div style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">/<htx:v>post.slug</htx:v></div>
+  </htx:component>
+  </htx:each>
+</div>
+<p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.75rem">View source. No &lt;script&gt; tags. No React. No hydration. No bundle. Just HTML that the server assembled from a template and a database. This is what your content pages should look like. React stays in the bounded region where you actually need it — the task manager, the editor, the dashboard. Not here.</p>
+
+<p style="margin-top:1.5rem"><a href="/layer5">&larr; Back to Layer 5 First</a></p>

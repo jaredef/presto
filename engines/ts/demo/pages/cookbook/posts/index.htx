@@ -1,0 +1,34 @@
+<!-- SURFACE (Layer 0): Full CRUD list page. Zero JavaScript.
+     Replaces: getServerSideProps + useQuery + React Router + loading states.
+     The data is in the HTML. The page is complete when it arrives. -->
+
+<htx:data type="post" where="status = 'published'" order="id desc" limit="10" as="posts" />
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <div>
+    <h1 style="margin:0">Posts</h1>
+    <p style="color:var(--ui-text-muted);margin:0.25rem 0 0">CRUD at the surface. Zero JavaScript.</p>
+  </div>
+  <a href="/cookbook/posts/new" class="ui-btn ui-btn-default ui-btn-sm">New Post</a>
+</div>
+
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;border:1px solid var(--ui-border);border-radius:var(--ui-radius-lg)">
+    <div>
+      <strong><a href="/cookbook/posts/{htx:post.slug}" style="text-decoration:none;color:var(--ui-text)"><htx:v>post.title</htx:v></a></strong>
+      <div style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.25rem">
+        <htx:v>post.slug</htx:v> &middot; <htx:v>post.status | capitalize</htx:v>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.5rem">
+      <a href="/cookbook/posts/{htx:post.slug}/edit" class="ui-btn ui-btn-outline ui-btn-sm">Edit</a>
+      <a href="/cookbook/posts/{htx:post.slug}/delete" class="ui-btn ui-btn-ghost ui-btn-sm" style="color:var(--ui-destructive)">Delete</a>
+    </div>
+  </div>
+  <htx:empty />
+  <htx:component src="/ui/alert.htx" variant="info" title="No posts">Create your first post to see it here.</htx:component>
+  </htx:each>
+</div>
+
+<p style="margin-top:2rem;font-size:0.8rem;color:var(--ui-text-muted)"><a href="/cookbook">&larr; Cookbook</a></p>

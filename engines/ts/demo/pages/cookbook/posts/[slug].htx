@@ -1,0 +1,25 @@
+<!-- SURFACE (Layer 0): Detail page with slug lookup. Zero JavaScript.
+     Replaces: getServerSideProps + useRouter + loading state + error boundary.
+     htx:data resolves the record. The page arrives complete. -->
+
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="items" />
+
+<htx:each items="items" as="post">
+<article style="max-width:700px">
+  <h1><htx:v>post.title</htx:v></h1>
+  <div style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1.5rem">
+    <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>post.status | capitalize</htx:v></htx:component>
+    <span style="font-size:0.8rem;color:var(--ui-text-muted)">/<htx:v>post.slug</htx:v></span>
+  </div>
+  <div style="line-height:1.8"><htx:v raw>post.body</htx:v></div>
+  <div style="margin-top:2rem;display:flex;gap:0.75rem">
+    <a href="/cookbook/posts/{htx:post.slug}/edit" class="ui-btn ui-btn-outline ui-btn-sm">Edit</a>
+    <a href="/cookbook/posts/{htx:post.slug}/delete" class="ui-btn ui-btn-ghost ui-btn-sm" style="color:var(--ui-destructive)">Delete</a>
+  </div>
+</article>
+<htx:empty />
+<h1>Not Found</h1>
+<p>No post with that slug.</p>
+</htx:each>
+
+<p style="margin-top:1.5rem"><a href="/cookbook/posts">&larr; Back to posts</a></p>

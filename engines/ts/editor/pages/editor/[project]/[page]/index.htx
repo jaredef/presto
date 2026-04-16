@@ -1,0 +1,166 @@
+<htx:layout none />
+<htx:data type="page" where="slug = '{htx:params.page}'" limit="1" as="page_list" />
+<htx:grant type="channel" module="builder" as="builderToken" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRESTO Builder</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <link rel="stylesheet" href="/css/chat-panel.css">
+  <link rel="stylesheet" href="/css/component-tree.css">
+  <link rel="stylesheet" href="/css/editor.css">
+</head>
+<body class="editor-body">
+
+<htx:each items="page_list" as="pageData">
+
+<!-- Toolbar -->
+<header class="editor-toolbar">
+  <div class="editor-toolbar-left">
+    <a href="/editor/{htx:params.project}" class="editor-back">&larr;</a>
+    <span class="editor-page-name"><htx:v>pageData.name</htx:v></span>
+    <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>pageData.status | capitalize</htx:v></htx:component>
+  </div>
+  <div class="editor-toolbar-center">
+    <button class="ui-btn ui-btn-ghost ui-btn-sm" id="btn-desktop" title="Desktop">Desktop</button>
+    <button class="ui-btn ui-btn-ghost ui-btn-sm" id="btn-tablet" title="Tablet">Tablet</button>
+    <button class="ui-btn ui-btn-ghost ui-btn-sm" id="btn-mobile" title="Mobile">Mobile</button>
+  </div>
+  <div class="editor-toolbar-right">
+    <span class="editor-save-status" id="save-status">Loaded</span>
+    <button class="ui-btn ui-btn-outline ui-btn-sm" id="btn-source">Source</button>
+    <button class="ui-btn ui-btn-outline ui-btn-sm" id="btn-export">Export</button>
+    <button class="ui-btn ui-btn-default ui-btn-sm" id="btn-save">Save</button>
+  </div>
+</header>
+
+<!-- Main grid -->
+<div class="editor-grid">
+  <!-- Left: Tabbed Palette + Tree -->
+  <aside class="editor-palette">
+    <div class="panel-tabs">
+      <button class="panel-tab active" data-panel="palette-panel">Components</button>
+      <button class="panel-tab" data-panel="tree-panel">Tree</button>
+    </div>
+    <div id="palette-panel" class="panel-content active">
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Layout</div>
+        <div class="palette-item" draggable="true" data-component="card">Card</div>
+        <div class="palette-item" draggable="true" data-component="separator">Separator</div>
+        <div class="palette-item" draggable="true" data-component="nav">Nav</div>
+        <div class="palette-item" draggable="true" data-component="sidebar">Sidebar</div>
+      </div>
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Content</div>
+        <div class="palette-item" draggable="true" data-element="h1">Heading 1</div>
+        <div class="palette-item" draggable="true" data-element="h2">Heading 2</div>
+        <div class="palette-item" draggable="true" data-element="p">Paragraph</div>
+        <div class="palette-item" draggable="true" data-element="img">Image</div>
+        <div class="palette-item" draggable="true" data-element="a">Link</div>
+      </div>
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Display</div>
+        <div class="palette-item" draggable="true" data-component="badge">Badge</div>
+        <div class="palette-item" draggable="true" data-component="alert">Alert</div>
+        <div class="palette-item" draggable="true" data-component="avatar">Avatar</div>
+        <div class="palette-item" draggable="true" data-component="skeleton">Skeleton</div>
+      </div>
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Form</div>
+        <div class="palette-item" draggable="true" data-component="button">Button</div>
+        <div class="palette-item" draggable="true" data-component="input">Input</div>
+        <div class="palette-item" draggable="true" data-component="textarea">Textarea</div>
+        <div class="palette-item" draggable="true" data-component="select">Select</div>
+        <div class="palette-item" draggable="true" data-component="checkbox">Checkbox</div>
+        <div class="palette-item" draggable="true" data-component="form">Form</div>
+      </div>
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Interactive</div>
+        <div class="palette-item" draggable="true" data-component="dialog">Dialog</div>
+        <div class="palette-item" draggable="true" data-component="tabs">Tabs</div>
+        <div class="palette-item" draggable="true" data-component="accordion">Accordion</div>
+        <div class="palette-item" draggable="true" data-component="dropdown">Dropdown</div>
+        <div class="palette-item" draggable="true" data-component="tooltip">Tooltip</div>
+        <div class="palette-item" draggable="true" data-component="slider">Slider</div>
+        <div class="palette-item" draggable="true" data-component="switch">Switch</div>
+      </div>
+      <div class="editor-palette-section">
+        <div class="editor-palette-category">Data</div>
+        <div class="palette-item" draggable="true" data-component="table">Table</div>
+        <div class="palette-item" draggable="true" data-component="data-table">DataTable</div>
+        <div class="palette-item" draggable="true" data-component="pagination">Pagination</div>
+      </div>
+    </div>
+    <div id="tree-panel" class="panel-content" tabindex="0">
+      <div id="tree-container"></div>
+    </div>
+  </aside>
+
+  <!-- Center: Canvas -->
+  <div class="editor-canvas-container" id="canvas-container">
+    <iframe id="editor-canvas" class="editor-canvas"></iframe>
+    <textarea id="source-editor" class="editor-source" style="display:none" spellcheck="false"></textarea>
+  </div>
+
+  <!-- Right: Properties -->
+  <aside class="editor-properties">
+    <div class="editor-properties-tabs">
+      <button class="props-tab active" data-tab="settings">Settings</button>
+      <button class="props-tab" data-tab="styles">Styles</button>
+    </div>
+    <div id="props-panel" class="editor-properties-content" data-active-tab="settings">
+      <div id="props-settings" class="props-tab-content active">
+        <p style="color:var(--ui-text-muted);font-size:0.85rem;padding:1rem">Select an element to edit its properties.</p>
+      </div>
+      <div id="props-styles" class="props-tab-content">
+        <p style="color:var(--ui-text-muted);font-size:0.85rem;padding:1rem">Select an element to edit its styles.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Chat Panel -->
+<div id="chat-panel" class="chat-panel collapsed">
+  <div class="chat-header" onclick="document.getElementById('chat-panel').classList.toggle('collapsed')">
+    <span>AI Assistant</span>
+    <button class="chat-toggle">▲ AI</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div id="chat-chips" class="chat-chips"></div>
+  <div class="chat-input-bar">
+    <input type="text" id="chat-input" placeholder="Describe what you want to build..." />
+    <button id="chat-send" class="ui-btn ui-btn-default ui-btn-sm">Send</button>
+  </div>
+</div>
+
+<!-- Hidden data for JS -->
+<input type="hidden" id="page-id" value="{htx:pageData.id}" />
+<input type="hidden" id="builder-token" value="{htx:builderToken}" />
+<input type="hidden" id="project-slug" value="{htx:params.project}" />
+
+<htx:empty />
+<h1>Page not found</h1>
+</htx:each>
+
+<script src="/js/presto-signals.js"></script>
+<script src="/js/source-diff.js"></script>
+<script src="/js/edit-history.js"></script>
+<script src="/js/starter-prompts.js"></script>
+<script src="/js/editor-app.js"></script>
+<script src="/js/component-tree.js"></script>
+<script src="/js/chat-panel.js"></script>
+<script>
+// Tab switching for palette/tree
+document.querySelectorAll('.panel-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.panel-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.panel-content').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

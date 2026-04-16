@@ -1,0 +1,108 @@
+<htx:layout none />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encapsulation Proof — Full React SPA Inside REST</title>
+  <link rel="stylesheet" href="/css/presto-ui.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #fafafa; color: #1a1a1a; }
+    .proof-container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .surface-header { padding: 1rem 1.5rem; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px 12px 0 0; border-bottom: 2px solid #22c55e; }
+    .surface-footer { padding: 1rem 1.5rem; background: #fff; border: 1px solid #e5e5e5; border-radius: 0 0 12px 12px; border-top: 2px solid #22c55e; }
+    .island-frame { border-left: 1px solid #e5e5e5; border-right: 1px solid #e5e5e5; border-left: 3px solid #3b82f6; border-right: 3px solid #3b82f6; }
+    .badge-l0 { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 100px; background: #dcfce7; color: #166534; font-weight: 600; }
+    .badge-l5 { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 100px; background: #dbeafe; color: #1e40af; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="proof-container">
+
+  <h1>Full SPA Inside REST</h1>
+  <p style="color:#888;margin-bottom:0.5rem">An entire React application — router, state, 4 views — mounted as a single island. The header and footer are server-rendered HTML.</p>
+  <p style="font-size:0.85rem;margin-bottom:2rem">
+    <a href="/showcase">&larr; Showcase</a> &middot;
+    <a href="/encapsulation/showcase">Island showcase</a>
+  </p>
+
+  <!-- LAYER 0: Server-rendered header -->
+  <div class="surface-header">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <span class="badge-l0">Layer 0</span>
+        <strong style="margin-left:0.5rem">Server-Rendered Header</strong>
+      </div>
+      <div style="font-size:0.8rem;color:#888">
+        <htx:v>posts | length</htx:v> published posts in database &middot;
+        <htx:auth><htx:v>auth.user.name</htx:v></htx:auth>
+        <htx:unauth>Guest</htx:unauth>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin:0.5rem 0 0">This header is server-rendered HTML. Zero JavaScript. The post count comes from SQLite via htx:data. The auth state comes from htx:auth. It was complete before the SPA loaded.</p>
+  </div>
+
+  <!-- LAYER 5: The entire React SPA -->
+  <div class="island-frame">
+    <div style="padding:0.5rem 1rem;background:#eff6ff;font-size:0.75rem;display:flex;justify-content:space-between;align-items:center">
+      <div><span class="badge-l5">Layer 5</span> <strong>React SPA Island</strong> — Router + State + 4 Views</div>
+      <div style="color:#888">393 KB bundle</div>
+    </div>
+    <template id="island-data-full-spa"><htx:v raw>posts | json</htx:v></template>
+    <htx:component src="/ui/island.htx" name="full-spa">
+      <div style="padding:3rem;text-align:center;color:#888;min-height:500px;display:flex;align-items:center;justify-content:center">Loading React SPA...</div>
+    </htx:component>
+  </div>
+
+  <!-- LAYER 0: Server-rendered footer -->
+  <div class="surface-footer">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <span class="badge-l0">Layer 0</span>
+        <strong style="margin-left:0.5rem">Server-Rendered Footer</strong>
+      </div>
+      <div style="font-size:0.8rem;color:#888">
+        PRESTO/TS v3 &middot; Seed v7 &middot; 22/22 conformant
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin:0.5rem 0 0">This footer is server-rendered HTML. It will be here whether the SPA loads or not. The REST boundary holds at the HTTP level. The DO model operates within the blue-bordered region above.</p>
+  </div>
+
+  <!-- Explainer -->
+  <div style="margin-top:2rem;padding:1.5rem;background:#fff;border:1px solid #e5e5e5;border-radius:12px;font-size:0.9rem;line-height:1.7">
+    <h3 style="margin-top:0">What You're Seeing</h3>
+    <p>The blue-bordered region in the middle is a <strong>complete React SPA</strong>: hash-based client-side router, global state (context + reducer like Redux), four views (Dashboard, Todos, Notifications, Settings), interactive components (checkboxes, forms, buttons), and theme switching.</p>
+    <p>The green-bordered regions above and below are <strong>Layer 0 server-rendered HTML</strong>. The header shows a live post count from SQLite and auth state. The footer shows engine version info. Both exist in the HTML before any JavaScript loads.</p>
+
+    <h3>The Migration Implication</h3>
+    <p>This is how an existing React application migrates to PRESTO:</p>
+    <ol>
+      <li><strong>Enclose.</strong> Mount the entire React app as a single island inside a PRESTO page. The server provides the shell. React provides everything inside.</li>
+      <li><strong>Surface the chrome.</strong> Move the header, footer, and navigation out of React into server-rendered HTML. They don't need client-side rendering.</li>
+      <li><strong>Surface individual pages.</strong> The Settings page is just two toggles — it can be Layer 0. The Dashboard stats can be server-rendered. Surface them one at a time.</li>
+      <li><strong>What remains is correct depth.</strong> The Todos page with its add/toggle/delete interactivity is genuinely Layer 5. The Notifications page with its real-time feed could be Layer 4. They stay as islands. Everything else surfaced.</li>
+    </ol>
+    <p>The developer never rewrites the React app. They enclose it, then surface pieces as they recognize that specific features don't need the depth. The React code shrinks naturally as features surface. What remains at Layer 5 is precisely the features that require it.</p>
+
+    <h3>Framework Encapsulation</h3>
+    <p>The same pattern works for any framework that renders into a DOM element:</p>
+    <ul>
+      <li><strong>Next.js</strong> — the client-side bundle (after SSR) can mount as an island. The PRESTO page provides the server-rendered shell that Next.js was compensating for with SSR.</li>
+      <li><strong>Astro</strong> — already uses an island model. PRESTO provides the server-rendered representation that Astro's HTML output represents, with the htx: directive system for data resolution.</li>
+      <li><strong>Vue / Svelte / Solid</strong> — any framework with a `mount(element)` API can be enclosed. The defineIsland() protocol handles the boundary.</li>
+    </ul>
+    <p>The encapsulation is not framework-specific. It is a property of the REST representation: because it is complete and self-describing, it can carry the bootstrapping instructions for <em>any</em> client-side architecture.</p>
+
+    <h3>The Numbers</h3>
+    <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-top:0.5rem">
+      <tr style="border-bottom:1px solid #e5e5e5"><th style="text-align:left;padding:0.4rem 0">Region</th><th style="text-align:left">Depth</th><th style="text-align:left">JavaScript</th><th style="text-align:left">Content</th></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">Header</td><td>Layer 0</td><td>0 KB</td><td>Post count + auth from server</td></tr>
+      <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:0.4rem 0">SPA Island</td><td>Layer 5</td><td>393 KB</td><td>Router + state + 4 views</td></tr>
+      <tr><td style="padding:0.4rem 0">Footer</td><td>Layer 0</td><td>0 KB</td><td>Static text from server</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

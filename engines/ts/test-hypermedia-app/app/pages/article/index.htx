@@ -1,0 +1,23 @@
+<!-- Layer 0: List page with server-side data.
+     htx:data queries SQLite. htx:each iterates results.
+     No client JavaScript. No loading state.
+     Escape: add search-input component (Layer 2). -->
+
+<h1>Articles</h1>
+<a href="/article/new" class="ui-btn ui-btn-default ui-btn-sm" style="margin-bottom:1.5rem">Create Article</a>
+
+<htx:data type="article" order="id desc" limit="20" as="items" />
+<div class="app-grid">
+  <htx:each items="items" as="item">
+  <htx:component src="/ui/card.htx" title="{htx:item.title}">
+    <p><htx:v>item.body</htx:v></p>
+    <p><htx:v>item.status</htx:v></p>
+    <div style="margin-top:0.75rem">
+      <a href="/article/{htx:item.slug}">View</a>
+      <a href="/article/{htx:item.slug}/edit" style="margin-left:0.75rem">Edit</a>
+    </div>
+  </htx:component>
+  <htx:empty />
+  <htx:component src="/ui/alert.htx" variant="info" title="No articles yet">Create your first article to see it here.</htx:component>
+  </htx:each>
+</div>

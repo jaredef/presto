@@ -1,0 +1,40 @@
+<htx:layout none />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="10" as="posts" />
+<htx:let heading="All Posts" />
+<htx:let xss="<script>alert('xss')</script>" />
+<htx:let rawhtml="<b>bold</b>" />
+<htx:grant type="websocket" as="ws_token" />
+<htx:action name="delete" type="post" record="42" />
+
+<h1><htx:v>heading</htx:v></h1>
+
+<htx:each items="posts" as="post">
+<div class="post">
+  <h2><htx:v>post.title</htx:v></h2>
+  <p><htx:v>post.body</htx:v></p>
+  <span><htx:v>post.title | uppercase</htx:v></span>
+</div>
+</htx:each>
+
+<htx:if test="posts">
+<p>Posts found</p>
+</htx:if>
+<htx:else>
+<p>No posts</p>
+</htx:else>
+
+<htx:auth><p>Logged in</p></htx:auth>
+<htx:unauth><p>Guest</p></htx:unauth>
+
+<p>Dangerous: <htx:v>xss</htx:v></p>
+<p>Raw: <htx:v raw>rawhtml</htx:v></p>
+
+<script>var x = "{htx:should.not.resolve}";</script>
+
+<htx:raw><htx:v>not.evaluated</htx:v></htx:raw>
+
+<p>Token: <htx:v>ws_token</htx:v></p>
+
+<htx:include src="/partials/nav.htx" />
+
+<htx:component src="/components/card.htx" title="Test Card"><p>Slot content</p></htx:component>

@@ -1,0 +1,13 @@
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="items" />
+<htx:each items="items" as="post">
+<article>
+  <h1><htx:v>post.title</htx:v></h1>
+  <htx:component src="/ui/badge.htx" variant="secondary"><htx:v>post.status | capitalize</htx:v></htx:component>
+  <div style="margin-top:1.5rem;line-height:1.8"><htx:v raw>post.body</htx:v></div>
+  <a href="/blog" style="display:inline-block;margin-top:2rem">&larr; Back</a>
+</article>
+<htx:empty />
+<h1>Not Found</h1>
+<p>No post with that slug.</p>
+<a href="/blog">&larr; Back</a>
+</htx:each>

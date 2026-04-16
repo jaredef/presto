@@ -1,0 +1,26 @@
+<htx:props>
+module = "presence"
+</htx:props>
+<div class="ui-presence" data-module="{{ module }}">
+  <htx:grant type="channel" module="{{ module }}" as="presence_token" />
+  <span class="ui-presence-count">0</span> online
+  <div class="ui-presence-avatars"></div>
+  <input type="hidden" class="ui-token" value="{htx:presence_token}" />
+</div>
+<htx:script>
+  var countEl = el.querySelector('.ui-presence-count');
+  var avatars = el.querySelector('.ui-presence-avatars');
+  var token = el.querySelector('.ui-token').value;
+  var mod = el.dataset.module;
+  if (token && typeof channel === 'function') {
+    var ch = channel('wss://' + location.host + '/api/channel/' + mod, token);
+    ch.on('presence', function(data) {
+      countEl.textContent = data.count || 0;
+      if (data.users && avatars) {
+        avatars.innerHTML = data.users.map(function(u) {
+          return '<span class="ui-presence-dot" title="' + u + '"></span>';
+        }).join('');
+      }
+    });
+  }
+</htx:script>

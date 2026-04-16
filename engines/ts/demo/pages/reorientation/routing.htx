@@ -1,0 +1,51 @@
+<h1>React Router → Filesystem Routing</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">The file's path is the URL. Zero configuration.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3>React/Next.js</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>// Next.js App Router requires:
+app/
+  page.tsx          // Home
+  layout.tsx        // Root layout
+  loading.tsx       // Loading state
+  error.tsx         // Error boundary
+  not-found.tsx     // 404
+  blog/
+    page.tsx        // Blog list
+    [slug]/
+      page.tsx      // Blog detail
+      loading.tsx   // Loading for this route
+      error.tsx     // Error for this route
+
+// 5 special file conventions
+// Nested layouts, parallel routes,
+// intercepting routes, route groups...</code></pre>
+  </div>
+  <div>
+    <h3>PRESTO</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;line-height:1.6"><code>pages/
+  index.htx         // Home (/)
+  _layout.htx       // Layout
+  _404.htx          // Not found
+  blog/
+    index.htx       // Blog list (/blog)
+    [slug].htx      // Blog detail (/blog/:slug)
+
+// One file per route.
+// One file handles ALL concerns:
+//   data, rendering, layout, errors.
+// No loading.tsx (page arrives complete).
+// No error.tsx (errors at the server level).
+// No special conventions beyond _layout.</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">This page's route</h3>
+<p style="font-family:monospace;background:#f5f5f5;padding:0.75rem;border-radius:6px">
+  File: <code>pages/reorientation/routing.htx</code><br>
+  URL: <code>/reorientation/routing</code><br>
+  Configuration: <strong>none</strong>
+</p>
+
+<p style="margin-top:1.5rem"><a href="/reorientation">&larr; All reorientations</a></p>

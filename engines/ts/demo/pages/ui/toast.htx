@@ -1,0 +1,17 @@
+<htx:props>
+position = "bottom-right"
+duration = "5000"
+</htx:props>
+<div class="ui-toast-container ui-toast-{{ position }}" data-duration="{{ duration }}">
+</div>
+<htx:script>
+  var container = el.querySelector('.ui-toast-container');
+  var duration = parseInt(container.dataset.duration) || 5000;
+  window.toast = function(message, variant) {
+    var t = document.createElement('div');
+    t.className = 'ui-toast ui-toast-' + (variant || 'default');
+    t.textContent = message;
+    container.appendChild(t);
+    setTimeout(function() { t.classList.add('ui-toast-exit'); setTimeout(function() { t.remove(); }, 300); }, duration);
+  };
+</htx:script>

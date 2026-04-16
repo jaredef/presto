@@ -1,0 +1,4 @@
+<htx:props>
+copyright = "2026"
+</htx:props>
+<footer>{{ copyright }}</footer>

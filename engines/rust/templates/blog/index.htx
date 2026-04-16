@@ -1,0 +1,8 @@
+<htx:data type="post" where="status = 'published'" order="id desc" as="posts" />
+<h1>Blog</h1>
+<htx:each items="posts" as="post">
+<article>
+  <h2><a href="/blog/{htx:post.slug}"><htx:v>post.title</htx:v></a></h2>
+  <p><htx:v>post.body</htx:v></p>
+</article>
+</htx:each>

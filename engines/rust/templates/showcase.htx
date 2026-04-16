@@ -1,0 +1,15 @@
+<htx:layout none />
+<htx:include src="/partials/nav.htx" />
+<htx:component src="components/card.htx" title="Hello">
+  <p>Slot content here.</p>
+</htx:component>
+
+<htx:let greeting="Welcome" />
+<p><htx:v>greeting</htx:v></p>
+
+<htx:auth><p>Logged in</p></htx:auth>
+<htx:unauth><p>Please sign in</p></htx:unauth>
+
+<htx:raw><htx:v>not.evaluated</htx:v></htx:raw>
+
+<script>var x = "{{ safe }}";</script>

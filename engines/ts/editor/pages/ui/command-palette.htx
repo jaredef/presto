@@ -1,0 +1,35 @@
+<htx:props>
+placeholder = "Type a command..."
+hotkey = "k"
+</htx:props>
+<div class="ui-command-palette" style="display:none" data-hotkey="{{ hotkey }}">
+  <div class="ui-command-overlay">
+    <div class="ui-command-dialog">
+      <input type="text" class="ui-command-input" placeholder="{{ placeholder }}" />
+      <div class="ui-command-list">
+        <htx:slot />
+      </div>
+    </div>
+  </div>
+</div>
+<htx:script>
+  var palette = el.querySelector('.ui-command-palette');
+  var input = el.querySelector('.ui-command-input');
+  var overlay = el.querySelector('.ui-command-overlay');
+  var hotkey = palette.dataset.hotkey;
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === hotkey) {
+      e.preventDefault();
+      palette.style.display = palette.style.display === 'none' ? '' : 'none';
+      if (palette.style.display !== 'none') input.focus();
+    }
+    if (e.key === 'Escape') palette.style.display = 'none';
+  });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) palette.style.display = 'none'; });
+  input.addEventListener('input', function() {
+    var q = input.value.toLowerCase();
+    el.querySelectorAll('.ui-command-item').forEach(function(item) {
+      item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+</htx:script>

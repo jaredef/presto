@@ -1,0 +1,16 @@
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="post_list" />
+
+<section class="section">
+  <htx:each items="post_list" as="post">
+  <article>
+    <h2 class="section-title"><htx:v>post.title</htx:v></h2>
+    <div class="card-meta" style="margin-bottom: 2rem;"><htx:v>post.slug</htx:v> &middot; <htx:v>post.status | capitalize</htx:v></div>
+    <div class="card" style="max-width: 700px;">
+      <p><htx:v raw>post.body</htx:v></p>
+    </div>
+  </article>
+  <htx:empty />
+  <h2 class="section-title">Not Found</h2>
+  <p class="section-subtitle">No post with that slug.</p>
+  </htx:each>
+</section>

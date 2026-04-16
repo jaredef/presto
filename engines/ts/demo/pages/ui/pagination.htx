@@ -1,0 +1,11 @@
+<htx:props>
+total = "0"
+perPage = "10"
+currentPage = "1"
+baseUrl = ""
+</htx:props>
+<nav class="ui-pagination" aria-label="Pagination">
+  <a href="{{ baseUrl }}?page=1" class="ui-pagination-btn">&laquo; First</a>
+  <span class="ui-pagination-info">Page {{ currentPage }}</span>
+  <a href="{{ baseUrl }}?page={{ currentPage }}" class="ui-pagination-btn">Last &raquo;</a>
+</nav>

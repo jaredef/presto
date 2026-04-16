@@ -1,0 +1,2 @@
+<htx:grant type="channel" module="demo" as="channelGrant" />
+<p>Channel token: <htx:v>channelGrant.token</htx:v></p>

@@ -1,0 +1,40 @@
+<h1>Reorientation Guide</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Every React compensating technology mapped to the correct PRESTO layer.</p>
+
+<h2>1. Rendering</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/ssr" style="text-decoration:none"><htx:component src="/ui/card.htx" title="SSR → Layer 0">Server rendering is the default, not a feature.</htx:component></a>
+  <a href="/reorientation/ssg" style="text-decoration:none"><htx:component src="/ui/card.htx" title="SSG → Cache-Control">Standard HTTP caching. No build step.</htx:component></a>
+  <a href="/reorientation/isr" style="text-decoration:none"><htx:component src="/ui/card.htx" title="ISR → HTTP Semantics">stale-while-revalidate. Predates React by 20 years.</htx:component></a>
+  <a href="/reorientation/rsc" style="text-decoration:none"><htx:component src="/ui/card.htx" title="RSC → Every Template">Every .htx template has direct data access. No directive needed.</htx:component></a>
+</div>
+
+<h2>2. Hydration</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/hydration" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Hydration → Absent">The problem does not arise. Scripts enhance complete documents.</htx:component></a>
+  <a href="/reorientation/resumability" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Resumability → Latent Binding">The DOM is the state. Nothing to serialize or resume.</htx:component></a>
+</div>
+
+<h2>3. Routing</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/routing" style="text-decoration:none"><htx:component src="/ui/card.htx" title="React Router → Filesystem">The file's path is the URL. Zero configuration.</htx:component></a>
+  <a href="/reorientation/server-actions" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Server Actions → htx:action">Signed mutation tokens. Standard POST. No RPC.</htx:component></a>
+</div>
+
+<h2>4. State &amp; Data</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/state" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Redux → The Document">The server-rendered document IS the shared state.</htx:component></a>
+  <a href="/reorientation/context" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Context API → Module Providers">No wrapping. No nesting. Expressions access context directly.</htx:component></a>
+  <a href="/reorientation/api" style="text-decoration:none"><htx:component src="/ui/card.htx" title="API Routes → Channel Handlers">Token-scoped JSON endpoints. No route files.</htx:component></a>
+</div>
+
+<h2>5. Build &amp; Performance</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/build" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Bundlers → Nothing">No webpack. No Vite. Edit, save, reload.</htx:component></a>
+  <a href="/reorientation/splitting" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Code Splitting → Per-Page">Each response is self-contained. Nothing to split.</htx:component></a>
+</div>
+
+<h2>6. Security</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem">
+  <a href="/reorientation/security" style="text-decoration:none"><htx:component src="/ui/card.htx" title="Route Guards → Absence">Unprovided capabilities don't exist on the client.</htx:component></a>
+</div>

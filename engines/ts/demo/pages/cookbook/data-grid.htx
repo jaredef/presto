@@ -1,0 +1,93 @@
+<!-- WADING DEPTH (Layer 2): Sortable, filterable data grid.
+     Replaces: TanStack Table + useState + useMemo + sorting/filter logic.
+     Server renders all data. Script sorts/filters client-side. -->
+
+<htx:data type="post" order="id desc" limit="50" as="posts" />
+
+<h1>Data Grid</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Sort, filter, inline display. Replaces TanStack Table.</p>
+
+<div style="display:flex;gap:0.75rem;margin-bottom:1rem">
+  <input type="text" id="grid-filter" placeholder="Filter by title..." class="ui-input" style="flex:1" />
+  <select id="grid-status" class="ui-select" style="width:auto">
+    <option value="">All statuses</option>
+    <option value="published">Published</option>
+    <option value="draft">Draft</option>
+  </select>
+</div>
+
+<div style="overflow-x:auto">
+  <table class="ui-table" id="data-grid">
+    <thead>
+      <tr>
+        <th style="cursor:pointer" data-sort="id">ID ↕</th>
+        <th style="cursor:pointer" data-sort="title">Title ↕</th>
+        <th style="cursor:pointer" data-sort="status">Status ↕</th>
+        <th style="cursor:pointer" data-sort="slug">Slug ↕</th>
+      </tr>
+    </thead>
+    <tbody>
+      <htx:each items="posts" as="post">
+      <tr data-id="{htx:post.id}" data-title="{htx:post.title}" data-status="{htx:post.status}" data-slug="{htx:post.slug}">
+        <td><htx:v>post.id</htx:v></td>
+        <td><htx:v>post.title</htx:v></td>
+        <td><htx:component src="/ui/badge.htx" variant="secondary"><htx:v>post.status | capitalize</htx:v></htx:component></td>
+        <td style="font-family:monospace;font-size:0.8rem"><htx:v>post.slug</htx:v></td>
+      </tr>
+      </htx:each>
+    </tbody>
+  </table>
+</div>
+
+<div id="grid-count" style="margin-top:0.75rem;font-size:0.8rem;color:var(--ui-text-muted)"></div>
+
+<script>
+(function() {
+  var table = document.getElementById('data-grid');
+  var tbody = table.querySelector('tbody');
+  var rows = Array.from(tbody.querySelectorAll('tr'));
+  var filterInput = document.getElementById('grid-filter');
+  var statusSelect = document.getElementById('grid-status');
+  var countEl = document.getElementById('grid-count');
+  var sortDir = {};
+
+  function applyFilters() {
+    var q = filterInput.value.toLowerCase();
+    var status = statusSelect.value;
+    var visible = 0;
+    rows.forEach(function(row) {
+      var matchTitle = !q || (row.dataset.title || '').toLowerCase().includes(q);
+      var matchStatus = !status || row.dataset.status === status;
+      row.style.display = (matchTitle && matchStatus) ? '' : 'none';
+      if (matchTitle && matchStatus) visible++;
+    });
+    countEl.textContent = visible + ' of ' + rows.length + ' rows';
+  }
+
+  filterInput.addEventListener('input', applyFilters);
+  statusSelect.addEventListener('change', applyFilters);
+
+  table.querySelectorAll('th[data-sort]').forEach(function(th) {
+    th.addEventListener('click', function() {
+      var key = th.dataset.sort;
+      sortDir[key] = !sortDir[key];
+      rows.sort(function(a, b) {
+        var va = (a.dataset[key] || '').toLowerCase();
+        var vb = (b.dataset[key] || '').toLowerCase();
+        if (!isNaN(va) && !isNaN(vb)) return sortDir[key] ? va - vb : vb - va;
+        return sortDir[key] ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      rows.forEach(function(row) { tbody.appendChild(row); });
+      applyFilters();
+    });
+  });
+
+  applyFilters();
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> useReactTable({ data, columns, getCoreRowModel, getSortedRowModel, getFilteredRowModel }) + columnHelper + flexRender + pagination state + sort state + filter state. Here: the server renders all rows with data attributes. A script sorts/filters the DOM directly.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

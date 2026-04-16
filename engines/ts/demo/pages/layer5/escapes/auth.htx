@@ -1,0 +1,67 @@
+<h1>Escape 3: Auth Doesn't Need Route Guards</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:2rem">Your app checks auth client-side and redirects. The escape: the server never sends the content.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+  <div>
+    <h3 style="color:var(--ui-destructive)">At Depth (Layer 5)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>function ProtectedPage() {
+  const { user, isLoading } = useSession();
+
+  if (isLoading) return &lt;Spinner /&gt;;
+  if (!user) {
+    router.push('/login');
+    return null; // flash of content before redirect
+  }
+
+  return &lt;AdminPanel user={user} /&gt;;
+}
+
+// The client bundle contains AdminPanel code
+// even for unauthorized users.
+// The route guard hides rendering,
+// not delivery.</code></pre>
+    <p style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">The JS for the protected page ships to everyone. The guard prevents rendering, not delivery. Flash of content before redirect.</p>
+  </div>
+
+  <div>
+    <h3 style="color:var(--ui-success)">Surfaced (Layer 0)</h3>
+    <pre style="background:#1e1e2e;color:#cdd6f4;padding:1rem;border-radius:8px;font-size:0.78rem;overflow-x:auto;line-height:1.5"><code>&lt;htx:auth role="admin"&gt;
+  &lt;!-- Admin content here.
+       This HTML only exists in the response
+       if the user is an authenticated admin.
+       Otherwise it was never rendered.
+       View source to confirm: it's not hidden.
+       It's absent. --&gt;
+  &lt;h2&gt;Admin Panel&lt;/h2&gt;
+  &lt;p&gt;Secret admin content.&lt;/p&gt;
+&lt;/htx:auth&gt;
+
+&lt;htx:unauth&gt;
+  &lt;p&gt;Please log in.&lt;/p&gt;
+&lt;/htx:unauth&gt;</code></pre>
+  </div>
+</div>
+
+<h3 style="margin-top:2rem">What dissolved</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.85rem">
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">NextAuth / Auth.js</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">useSession hook</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">ProtectedRoute wrapper</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Client-side redirect</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Loading spinner during auth check</div>
+  <div style="padding:0.5rem;background:#fef2f2;border-radius:6px;text-decoration:line-through;color:#999">Flash of protected content</div>
+</div>
+
+<h3 style="margin-top:2rem">Live: Security through absence</h3>
+<htx:auth>
+  <htx:component src="/ui/alert.htx" variant="success" title="Authenticated">
+    You are <htx:v>auth.user.name</htx:v> (<htx:v>auth.user.role</htx:v>). This content exists in the response because the server resolved your session.
+  </htx:component>
+</htx:auth>
+<htx:unauth>
+  <htx:component src="/ui/alert.htx" variant="info" title="Not Authenticated">
+    This is the guest view. The authenticated content was never rendered. View source — it is not in the HTML. Not hidden. Absent.
+  </htx:component>
+</htx:unauth>
+
+<p style="margin-top:1.5rem"><a href="/layer5">&larr; Back to Layer 5 First</a></p>

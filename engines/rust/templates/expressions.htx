@@ -1,0 +1,6 @@
+<htx:layout none />
+<htx:let name="Jared" />
+<htx:let title="presto" />
+<p><htx:v>name</htx:v></p>
+<span><htx:v>title | uppercase</htx:v></span>
+<a href="/blog/{htx:params.slug}"><htx:v>name</htx:v></a>

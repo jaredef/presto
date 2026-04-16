@@ -1,0 +1,31 @@
+<htx:props>
+module = "feed"
+maxItems = "50"
+</htx:props>
+<div class="ui-live-feed" data-module="{{ module }}" data-max="{{ maxItems }}">
+  <htx:grant type="channel" module="{{ module }}" as="feed_token" />
+  <div class="ui-feed-items"></div>
+  <div class="ui-feed-status">Connecting...</div>
+  <input type="hidden" class="ui-token" value="{htx:feed_token}" />
+</div>
+<htx:script>
+  var token = el.querySelector('.ui-token').value;
+  var container = el.querySelector('.ui-feed-items');
+  var status = el.querySelector('.ui-feed-status');
+  var mod = el.dataset.module;
+  var max = parseInt(el.dataset.max) || 50;
+  if (token && typeof channel === 'function') {
+    var ch = channel('wss://' + location.host + '/api/channel/' + mod, token);
+    ch.on('message', function(data) {
+      var item = document.createElement('div');
+      item.className = 'ui-feed-item';
+      item.textContent = typeof data === 'string' ? data : JSON.stringify(data);
+      container.prepend(item);
+      while (container.children.length > max) container.lastChild.remove();
+    });
+    ch.on('close', function() { status.textContent = 'Disconnected'; });
+    status.textContent = 'Connected';
+  } else {
+    status.textContent = 'No channel token available';
+  }
+</htx:script>

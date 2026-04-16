@@ -1,0 +1,10 @@
+<htx:props>
+src = ""
+alt = ""
+initials = ""
+size = "md"
+</htx:props>
+<div class="ui-avatar ui-avatar-{{ size }}">
+  <img src="{{ src }}" alt="{{ alt }}" class="ui-avatar-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+  <span class="ui-avatar-fallback" style="display:none">{{ initials }}</span>
+</div>

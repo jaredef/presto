@@ -1,0 +1,14 @@
+<htx:props>
+action = "create"
+type = ""
+record = ""
+method = "post"
+</htx:props>
+<form method="{{ method }}" class="ui-form">
+  <htx:action name="{{ action }}" type="{{ type }}" record="{{ record }}" />
+  <input type="hidden" name="_action_token" value="{htx:$actions.{{ action }}}" />
+  <htx:slot />
+  <div class="ui-form-actions">
+    <button type="submit" class="ui-btn ui-btn-default ui-btn-md">Submit</button>
+  </div>
+</form>

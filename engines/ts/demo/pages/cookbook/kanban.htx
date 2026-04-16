@@ -1,0 +1,88 @@
+<!-- WADING DEPTH (Layer 2): Drag-and-drop kanban board.
+     Replaces: dnd-kit + Redux + complex state management + optimistic updates.
+     Server renders board. Script handles drag. POST updates status. -->
+
+<htx:data type="task" where="status = 'todo'" order="id" as="todo" />
+<htx:data type="task" where="status = 'in-progress'" order="id" as="inProgress" />
+<htx:data type="task" where="status = 'done'" order="id" as="done" />
+<htx:action name="update" type="task" record="0" />
+
+<h1>Kanban Board</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Drag-and-drop task management. Replaces dnd-kit + Redux.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem" id="kanban-board">
+  <div class="kanban-column" data-status="todo" style="background:var(--ui-bg-muted);border-radius:8px;padding:1rem;min-height:300px">
+    <h3 style="font-size:0.9rem;margin:0 0 0.75rem;color:var(--ui-text-muted)">To Do</h3>
+    <htx:each items="todo" as="task">
+    <div class="kanban-card" draggable="true" data-id="{htx:task.id}" style="background:#fff;border:1px solid var(--ui-border);border-radius:6px;padding:0.75rem;margin-bottom:0.5rem;cursor:grab">
+      <strong style="font-size:0.85rem"><htx:v>task.title</htx:v></strong>
+      <div style="font-size:0.75rem;color:var(--ui-text-muted);margin-top:0.25rem"><htx:v>task.description</htx:v></div>
+    </div>
+    </htx:each>
+  </div>
+
+  <div class="kanban-column" data-status="in-progress" style="background:var(--ui-bg-muted);border-radius:8px;padding:1rem;min-height:300px">
+    <h3 style="font-size:0.9rem;margin:0 0 0.75rem;color:var(--ui-text-muted)">In Progress</h3>
+    <htx:each items="inProgress" as="task">
+    <div class="kanban-card" draggable="true" data-id="{htx:task.id}" style="background:#fff;border:1px solid var(--ui-border);border-radius:6px;padding:0.75rem;margin-bottom:0.5rem;cursor:grab">
+      <strong style="font-size:0.85rem"><htx:v>task.title</htx:v></strong>
+      <div style="font-size:0.75rem;color:var(--ui-text-muted);margin-top:0.25rem"><htx:v>task.description</htx:v></div>
+    </div>
+    </htx:each>
+  </div>
+
+  <div class="kanban-column" data-status="done" style="background:var(--ui-bg-muted);border-radius:8px;padding:1rem;min-height:300px">
+    <h3 style="font-size:0.9rem;margin:0 0 0.75rem;color:var(--ui-text-muted)">Done</h3>
+    <htx:each items="done" as="task">
+    <div class="kanban-card" draggable="true" data-id="{htx:task.id}" style="background:#fff;border:1px solid var(--ui-border);border-radius:6px;padding:0.75rem;margin-bottom:0.5rem;cursor:grab">
+      <strong style="font-size:0.85rem"><htx:v>task.title</htx:v></strong>
+      <div style="font-size:0.75rem;color:var(--ui-text-muted);margin-top:0.25rem"><htx:v>task.description</htx:v></div>
+    </div>
+    </htx:each>
+  </div>
+</div>
+
+<div id="kanban-status" style="margin-top:0.75rem;font-size:0.8rem;color:var(--ui-text-muted)"></div>
+
+<script>
+(function() {
+  var board = document.getElementById('kanban-board');
+  var statusEl = document.getElementById('kanban-status');
+  var dragging = null;
+
+  board.addEventListener('dragstart', function(e) {
+    var card = e.target.closest('.kanban-card');
+    if (card) { dragging = card; card.style.opacity = '0.5'; }
+  });
+
+  board.addEventListener('dragend', function(e) {
+    if (dragging) { dragging.style.opacity = '1'; dragging = null; }
+  });
+
+  board.querySelectorAll('.kanban-column').forEach(function(col) {
+    col.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      col.style.background = 'rgba(99,102,241,0.1)';
+    });
+    col.addEventListener('dragleave', function() {
+      col.style.background = 'var(--ui-bg-muted)';
+    });
+    col.addEventListener('drop', function(e) {
+      e.preventDefault();
+      col.style.background = 'var(--ui-bg-muted)';
+      if (!dragging) return;
+      var newStatus = col.dataset.status;
+      var taskId = dragging.dataset.id;
+      col.appendChild(dragging);
+      statusEl.textContent = 'Moved task ' + taskId + ' to ' + newStatus;
+      // In a full implementation, POST the status update via action token
+    });
+  });
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> @dnd-kit/core + @dnd-kit/sortable + Redux store with tasks slice + optimistic update middleware + revert on error + complex DragOverlay component. Here: the server renders three columns from three queries. A 30-line script handles drag-and-drop via the native HTML5 drag API.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

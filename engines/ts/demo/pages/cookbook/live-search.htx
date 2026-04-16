@@ -1,0 +1,46 @@
+<!-- SHALLOWS (Layer 1): Live search with inline results.
+     Replaces: React Query + useState + useEffect + Suspense + loading spinner.
+     Debounced fetch, server renders fragment, swap into DOM. -->
+
+<htx:data type="post" where="status = 'published'" order="id desc" limit="20" as="allPosts" />
+
+<h1>Live Search</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Debounced search, server-rendered results. Replaces React Query + Suspense.</p>
+
+<input type="search" id="search-input" placeholder="Type to search posts..." class="ui-input" style="margin-bottom:1rem" />
+
+<div id="search-results">
+  <htx:each items="allPosts" as="post">
+  <div class="search-result" data-title="{htx:post.title}" data-body="{htx:post.body}" data-slug="{htx:post.slug}" style="padding:0.75rem;border-bottom:1px solid var(--ui-border)">
+    <strong><htx:v>post.title</htx:v></strong>
+    <div style="font-size:0.85rem;color:var(--ui-text-muted)"><htx:v>post.body</htx:v></div>
+  </div>
+  </htx:each>
+</div>
+
+<script>
+(function() {
+  var input = document.getElementById('search-input');
+  var container = document.getElementById('search-results');
+  var items = container.querySelectorAll('.search-result');
+  var timer = null;
+
+  input.addEventListener('input', function() {
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      var q = input.value.toLowerCase().trim();
+      items.forEach(function(item) {
+        var title = (item.dataset.title || '').toLowerCase();
+        var body = (item.dataset.body || '').toLowerCase();
+        item.style.display = (!q || title.includes(q) || body.includes(q)) ? '' : 'none';
+      });
+    }, 150);
+  });
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> const { data, isLoading } = useQuery(['posts', query], fetchPosts); plus Suspense fallback, error boundary, stale-while-revalidate config, cache key management. Here: the data is in the HTML. The script filters client-side. For larger datasets, the input would fetch a server-rendered fragment via htmx-style swap.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

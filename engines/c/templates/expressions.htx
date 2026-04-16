@@ -1,0 +1,8 @@
+<htx:layout none />
+<htx:let greeting="Hello" />
+<p><htx:v>greeting</htx:v>, <htx:v>user.name</htx:v>!</p>
+<p>Uppercase: <htx:v>user.name | uppercase</htx:v></p>
+<p>Link: <a href="/u/{htx:user.slug}"><htx:v>user.name</htx:v></a></p>
+<p>Raw: <htx:v raw>user.bio</htx:v></p>
+<htx:raw><htx:v>not.evaluated</htx:v></htx:raw>
+<script>var x = "{htx:should.not.resolve}";</script>

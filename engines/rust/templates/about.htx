@@ -1,0 +1,3 @@
+<h1>About</h1>
+<p>This site is powered by the PRESTO engine.</p>
+<htx:include src="/partials/footer.htx" />

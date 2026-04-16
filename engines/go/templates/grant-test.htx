@@ -1,0 +1,3 @@
+<htx:layout none />
+<htx:grant type="channel" module="demo" as="demoToken" />
+<p>Token: <htx:v>demoToken</htx:v></p>

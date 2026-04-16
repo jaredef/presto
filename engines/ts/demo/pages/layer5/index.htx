@@ -1,0 +1,39 @@
+<h1>Layer 5 First</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:0.5rem">Start at your home depth. Escape when the architecture gives you something your depth can't.</p>
+
+<htx:component src="/ui/alert.htx" variant="info" title="For React Developers">
+  These demos start where you live: components, state, effects, client rendering. Then they show the specific moment where surfacing dissolves a problem you've been compensating for.
+</htx:component>
+
+<h2 style="margin-top:2rem">Your Home Depth</h2>
+<a href="/layer5/app" style="text-decoration:none;display:block;margin-bottom:1rem">
+  <htx:component src="/ui/card.htx" title="The Full App" description="Components + State + Effects">
+    A complete interactive application at Layer 5. Your mental model works here. Components, signals (like useState), computed values, effects, client rendering. This is home.
+  </htx:component>
+</a>
+
+<h2 style="margin-top:2rem">The Escape Hatches</h2>
+<p style="color:var(--ui-text-muted);margin-bottom:1rem">Each escape surfaces one concern to a shallower layer. Each dissolves a specific compensation.</p>
+
+<div style="display:grid;gap:0.75rem">
+  <a href="/layer5/escapes/data" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Escape 1: Data Doesn't Need the Client" description="Layer 5 → Layer 0">
+      Your app fetches data client-side. The escape: let the server resolve it into the HTML. React Query, loading states, and cache invalidation dissolve.
+    </htx:component>
+  </a>
+  <a href="/layer5/escapes/forms" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Escape 2: Forms Don't Need JavaScript" description="Layer 5 → Layer 0">
+      Your app manages form state in React. The escape: a server-signed mutation token and a native HTML form. React Hook Form and Server Actions dissolve.
+    </htx:component>
+  </a>
+  <a href="/layer5/escapes/auth" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Escape 3: Auth Doesn't Need Route Guards" description="Layer 5 → Layer 0">
+      Your app checks auth client-side and redirects. The escape: the server never sends the protected content. Route guards and useSession dissolve.
+    </htx:component>
+  </a>
+  <a href="/layer5/escapes/content" style="text-decoration:none">
+    <htx:component src="/ui/card.htx" title="Escape 4: Content Pages Don't Need React" description="Layer 5 → Layer 0">
+      Your app renders blog posts with React. The escape: they're HTML. SSR, hydration, and code splitting dissolve. React stays only where it's needed.
+    </htx:component>
+  </a>
+</div>

@@ -1,0 +1,25 @@
+<!-- Layer 0: This page uses no client JavaScript.
+     Data is queried at render time via htx:data.
+     The server sends complete HTML. No loading state needed.
+     Escape: add htx:script for client behavior (Layer 2). -->
+
+<section class="app-hero">
+  <h1>Welcome to test-hypermedia-app</h1>
+  <p>A hypermedia application built on the PRESTO architectural style.</p>
+  <p class="app-subtitle">Server-rendered HTML. No build step. No client framework.</p>
+</section>
+
+<section class="app-section">
+  <h2>Recent Posts</h2>
+  <htx:data type="post" where="status = 'published'" order="id desc" limit="3" as="posts" />
+  <div class="app-grid">
+    <htx:each items="posts" as="post">
+    <htx:component src="/ui/card.htx" title="{htx:post.title}">
+      <p><htx:v>post.body</htx:v></p>
+      <a href="/blog/{htx:post.slug}">Read more</a>
+    </htx:component>
+    <htx:empty />
+    <p>No posts yet. Create one to get started.</p>
+    </htx:each>
+  </div>
+</section>

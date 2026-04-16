@@ -1,0 +1,39 @@
+<!-- SURFACE (Layer 0): Search + Pagination. Zero JavaScript.
+     Replaces: React Query + useSearchParams + Suspense + loading states + ISR.
+     Standard query params. Standard links. The server resolves everything. -->
+
+<htx:let query="{htx:query.q}" />
+<htx:let currentPage="{htx:query.page}" />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+
+<h1>Search &amp; Pagination</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Server-side search and paginated results. Zero JavaScript. No React Query.</p>
+
+<form method="get" action="/cookbook/search" style="margin-bottom:1.5rem">
+  <div style="display:flex;gap:0.5rem">
+    <input type="search" name="q" value="{htx:query.q}" placeholder="Search posts..." class="ui-input" style="flex:1" />
+    <button type="submit" class="ui-btn ui-btn-default ui-btn-md">Search</button>
+  </div>
+</form>
+
+<div style="display:grid;gap:0.75rem">
+  <htx:each items="posts" as="post">
+  <htx:component src="/ui/card.htx" title="{htx:post.title}">
+    <p style="font-size:0.9rem"><htx:v>post.body</htx:v></p>
+    <div style="font-size:0.8rem;color:var(--ui-text-muted);margin-top:0.5rem">/<htx:v>post.slug</htx:v></div>
+  </htx:component>
+  <htx:empty />
+  <htx:component src="/ui/alert.htx" variant="info" title="No results">No published posts found.</htx:component>
+  </htx:each>
+</div>
+
+<div style="display:flex;gap:0.75rem;margin-top:1.5rem">
+  <a href="/cookbook/search?page=1" class="ui-btn ui-btn-outline ui-btn-sm">&laquo; First</a>
+  <a href="/cookbook/search?page=2" class="ui-btn ui-btn-outline ui-btn-sm">Next &raquo;</a>
+</div>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> useQuery(['posts', { q, page }], fetchPosts), Suspense boundary + fallback spinner, useSearchParams() for query state, React Query cache invalidation, loading/error/success states. Here: a form submits GET params. The server queries. The HTML arrives complete.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

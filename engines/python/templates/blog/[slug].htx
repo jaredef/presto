@@ -1,0 +1,8 @@
+<htx:data type="post" where="slug = '{htx:params.slug}'" as="posts" />
+
+<htx:each items="posts" as="post">
+<article>
+  <h1><htx:v>post.title</htx:v></h1>
+  <div><htx:v>post.body</htx:v></div>
+</article>
+</htx:each>

@@ -1,0 +1,10 @@
+<htx:props>
+title = "Untitled"
+</htx:props>
+<div class="card">
+  <h3>{{ title }}</h3>
+  <htx:slot />
+</div>
+<htx:script>
+el.addEventListener('click', function() { el.classList.toggle('active'); });
+</htx:script>

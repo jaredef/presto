@@ -1,0 +1,22 @@
+<htx:layout none />
+<h1>Active Modules</h1>
+<p style="color:#666;margin-bottom:2rem">All 12 Module Kit modules are loaded on this server.</p>
+<table class="ui-table" style="max-width:700px">
+  <thead>
+    <tr><th>#</th><th>Module</th><th>Type</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>error-handler</td><td>Middleware</td><td>Catches errors, renders dev/prod error pages</td></tr>
+    <tr><td>2</td><td>request-id</td><td>Middleware + Context</td><td>UUID per request, X-Request-ID header</td></tr>
+    <tr><td>3</td><td>logger</td><td>Middleware</td><td>Request logging with timing</td></tr>
+    <tr><td>4</td><td>cors</td><td>Middleware</td><td>Access-Control headers, OPTIONS preflight</td></tr>
+    <tr><td>5</td><td>security</td><td>Middleware</td><td>X-Content-Type-Options, X-Frame-Options, etc.</td></tr>
+    <tr><td>6</td><td>rate-limit</td><td>Middleware</td><td>Sliding window, 429 responses, X-RateLimit headers</td></tr>
+    <tr><td>7</td><td>cache</td><td>Middleware</td><td>ETag generation, 304 conditional responses</td></tr>
+    <tr><td>8</td><td>session</td><td>Middleware + Context</td><td>HMAC-signed stateless cookie sessions</td></tr>
+    <tr><td>9</td><td>auth</td><td>Middleware + Context</td><td>Authentication, htx:auth/htx:unauth, password hashing</td></tr>
+    <tr><td>10</td><td>health</td><td>Middleware</td><td>/healthz endpoint with uptime + checks</td></tr>
+    <tr><td>11</td><td>static-assets</td><td>Context</td><td>Content-hashed versioned URLs</td></tr>
+    <tr><td>12</td><td>flash</td><td>Middleware + Context</td><td>One-time messages (not loaded in this demo)</td></tr>
+  </tbody>
+</table>

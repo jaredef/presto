@@ -1,0 +1,61 @@
+<!-- SHALLOWS (Layer 1): Tab navigation without page reload.
+     Replaces: React Router nested routes + client-side navigation + code splitting.
+     Server renders each panel. Tabs swap visibility. -->
+
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="published" />
+<htx:data type="post" where="status = 'draft'" order="id desc" limit="5" as="drafts" />
+
+<h1>Tab Navigation</h1>
+<p style="color:var(--ui-text-muted);margin-bottom:1.5rem">Content tabs without page reload. Both panels server-rendered. Replaces React Router.</p>
+
+<div id="tab-container">
+  <div style="display:flex;gap:0;border-bottom:2px solid var(--ui-border);margin-bottom:1rem">
+    <button class="tab-btn active" data-tab="published" style="padding:0.5rem 1.25rem;border:none;background:none;cursor:pointer;font-size:0.9rem;font-weight:500;border-bottom:2px solid var(--ui-primary);margin-bottom:-2px">Published</button>
+    <button class="tab-btn" data-tab="drafts" style="padding:0.5rem 1.25rem;border:none;background:none;cursor:pointer;font-size:0.9rem;color:var(--ui-text-muted)">Drafts</button>
+  </div>
+
+  <div class="tab-panel" data-panel="published">
+    <htx:each items="published" as="post">
+    <div style="padding:0.75rem;border-bottom:1px solid var(--ui-border)">
+      <strong><htx:v>post.title</htx:v></strong>
+      <htx:component src="/ui/badge.htx" variant="secondary">Published</htx:component>
+    </div>
+    <htx:empty />
+    <p style="color:var(--ui-text-muted)">No published posts.</p>
+    </htx:each>
+  </div>
+
+  <div class="tab-panel" data-panel="drafts" style="display:none">
+    <htx:each items="drafts" as="post">
+    <div style="padding:0.75rem;border-bottom:1px solid var(--ui-border)">
+      <strong><htx:v>post.title</htx:v></strong>
+      <htx:component src="/ui/badge.htx" variant="outline">Draft</htx:component>
+    </div>
+    <htx:empty />
+    <p style="color:var(--ui-text-muted)">No drafts.</p>
+    </htx:each>
+  </div>
+</div>
+
+<script>
+(function() {
+  var btns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btns.forEach(function(b) { b.classList.remove('active'); b.style.borderBottom = 'none'; b.style.color = 'var(--ui-text-muted)'; });
+      panels.forEach(function(p) { p.style.display = 'none'; });
+      btn.classList.add('active');
+      btn.style.borderBottom = '2px solid var(--ui-primary)';
+      btn.style.color = 'var(--ui-text)';
+      document.querySelector('[data-panel="' + btn.dataset.tab + '"]').style.display = '';
+    });
+  });
+})();
+</script>
+
+<div style="margin-top:2rem;padding:1rem;background:var(--ui-bg-muted);border-radius:8px;font-size:0.85rem">
+  <strong>What this replaces:</strong> React Router with nested routes, lazy-loaded tab panels, Suspense boundaries per panel, client-side state for active tab. Here: both panels are server-rendered in the same response. A 10-line script toggles visibility. Both panels load instantly because they arrived with the page.
+</div>
+
+<p style="margin-top:1.5rem"><a href="/cookbook">&larr; Cookbook</a></p>

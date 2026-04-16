@@ -1,0 +1,27 @@
+<htx:props>
+placeholder = "Search..."
+url = ""
+debounce = "300"
+</htx:props>
+<div class="ui-search">
+  <input type="search" class="ui-input ui-search-input" placeholder="{{ placeholder }}" data-url="{{ url }}" data-debounce="{{ debounce }}" />
+  <div class="ui-search-results" style="display:none"></div>
+</div>
+<htx:script>
+  var input = el.querySelector('.ui-search-input');
+  var results = el.querySelector('.ui-search-results');
+  var timer = null;
+  var delay = parseInt(input.dataset.debounce) || 300;
+  input.addEventListener('input', function() {
+    clearTimeout(timer);
+    var q = input.value.trim();
+    if (!q) { results.style.display = 'none'; return; }
+    timer = setTimeout(function() {
+      var url = input.dataset.url + '?q=' + encodeURIComponent(q);
+      fetch(url, { headers: { 'HX-Request': 'true' } })
+        .then(function(r) { return r.text(); })
+        .then(function(html) { results.innerHTML = html; results.style.display = ''; });
+    }, delay);
+  });
+  document.addEventListener('click', function(e) { if (!el.contains(e.target)) results.style.display = 'none'; });
+</htx:script>

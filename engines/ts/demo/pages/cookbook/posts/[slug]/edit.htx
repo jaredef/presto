@@ -1,0 +1,24 @@
+<!-- SURFACE (Layer 0): Edit form. Data loaded + mutation signed. Zero JavaScript.
+     Replaces: getServerSideProps (load) + Server Action (save) + React Hook Form.
+     One template does both: htx:data loads, htx:action signs. -->
+
+<htx:data type="post" where="slug = '{htx:params.slug}'" limit="1" as="items" />
+
+<htx:each items="items" as="post">
+<h1>Edit: <htx:v>post.title</htx:v></h1>
+<div style="max-width:600px">
+  <htx:component src="/ui/form.htx" action="update" type="post" record="{htx:post.id}">
+    <htx:component src="/ui/input.htx" label="Title" name="title" value="{htx:post.title}" required="required" />
+    <htx:component src="/ui/input.htx" label="Slug" name="slug" value="{htx:post.slug}" required="required" />
+    <htx:component src="/ui/textarea.htx" label="Body" name="body" rows="6" />
+    <htx:component src="/ui/select.htx" label="Status" name="status">
+      <option value="draft">Draft</option>
+      <option value="published">Published</option>
+    </htx:component>
+  </htx:component>
+</div>
+<htx:empty />
+<h1>Not Found</h1>
+</htx:each>
+
+<p style="margin-top:1rem"><a href="/cookbook/posts">&larr; Back to posts</a></p>
