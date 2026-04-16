@@ -1,0 +1,38 @@
+<htx:let name="heading" value="Recent Posts" />
+<htx:data type="post" where="status = 'published'" order="id desc" limit="5" as="posts" />
+<htx:grant type="channel" module="chat" as="chatToken" />
+
+<main>
+  <h1><htx:v>heading</htx:v></h1>
+
+  <htx:auth>
+    <p>Welcome back, <htx:v>auth.user.name</htx:v>.</p>
+  </htx:auth>
+  <htx:unauth>
+    <p>Welcome, guest.</p>
+  </htx:unauth>
+
+  <ul>
+    <htx:each items="posts" as="post">
+      <li>
+        <article>
+          <h2><htx:v>post.title</htx:v></h2>
+          <p><htx:v>post.body</htx:v></p>
+          <small>Slug: <htx:v>post.slug</htx:v></small>
+        </article>
+      </li>
+      <htx:empty>
+        <li>No published posts yet.</li>
+      </htx:empty>
+    </htx:each>
+  </ul>
+
+  <form method="post" action="/api/action/execute?token={htx:$actions.delete}">
+    <htx:action name="delete" type="post" record="{htx:posts.0.id}" />
+    <button type="submit">Delete latest post</button>
+  </form>
+
+  <section data-chat-token="{htx:chatToken}">
+    <p>Live channel token attached for client usage.</p>
+  </section>
+</main>

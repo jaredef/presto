@@ -1,6 +1,6 @@
 # PRESTO Engine Derivations
 
-**Six conformant implementations of the [htxlang specification](https://github.com/jaredef/htxlang), each derived from the same constraint seed ([PRESTO Seed](https://github.com/jaredef/htxlang/blob/main/seed/presto-seed.md)). Different languages. Same constraints. Same induced properties.**
+**Seven conformant implementations of the [htxlang specification](https://github.com/jaredef/htxlang), each derived from the same constraint seed ([PRESTO Seed](https://github.com/jaredef/htxlang/blob/main/seed/presto-seed.md)). Different languages. Same constraints. Same induced properties.**
 
 This repository is the empirical case for the [derivation inversion](https://jaredfoy.com/doc/247-the-derivation-inversion): prose-stated constraints produce conformant implementations across substrates.
 
@@ -16,6 +16,7 @@ This repository is the empirical case for the [derivation inversion](https://jar
 | [engines/rust](engines/rust) | Rust | ~54,155 | In progress | Most ambitious derivation |
 | [engines/c](engines/c) | C | ~4,209 | Proof of concept | Minimal, compiles on Raspberry Pi 5 |
 | [engines/python](engines/python) | Python | ~1,631 | Functional | Simplest derivation |
+| [engines/zig](engines/zig) | Zig | ~2,516 | Functional | HTTP server, CLI, conformance tests |
 
 ## The Constraint Seed
 
@@ -39,7 +40,7 @@ A conformant engine satisfies the contracts. The seed determines the harvest.
 4. Run the verification suite against the contracts
 5. Iterate until all contracts pass
 
-This has been validated across all six languages. The same constraints produce the same properties regardless of the implementation language — which is the [SIPE law](https://jaredfoy.com/doc/143-sipe) in action.
+This has been validated across all seven languages. The same constraints produce the same properties regardless of the implementation language — which is the [SIPE law](https://jaredfoy.com/doc/143-sipe) in action.
 
 ## Specification
 
