@@ -20,7 +20,8 @@ export class HtxResponse {
   constructor(
     public status: number,
     public contentType: string,
-    public body: string,
+    // Bytes for static files (images, fonts, wasm); text for rendered HTML/JSON.
+    public body: string | Uint8Array,
     public headers: Record<string, string> = {},
   ) {}
 

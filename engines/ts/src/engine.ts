@@ -18,8 +18,13 @@ const MIME_TYPES: Record<string, string> = {
   ".json": "application/json",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".avif": "image/avif",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
+  ".woff": "font/woff",
   ".woff2": "font/woff2",
   ".wasm": "application/wasm",
 };
@@ -83,7 +88,7 @@ export class PrestoEngine {
           request,
           () => new HtxResp(200, "text/html", "__PIPELINE_CONTINUE__"),
         );
-        if (!result.body.includes("__PIPELINE_CONTINUE__")) {
+        if (typeof result.body !== "string" || !result.body.includes("__PIPELINE_CONTINUE__")) {
           // Middleware short-circuited — return its response directly
           return result;
         }
@@ -165,10 +170,11 @@ export class PrestoEngine {
     if (!resolved.startsWith(publicResolved)) return null;
 
     try {
-      const content = readFileSync(filePath);
-      const ext = extname(filePath);
+      // Keep the raw bytes: decoding to a string corrupts binary files (images, fonts, wasm).
+      const content = new Uint8Array(readFileSync(filePath));
+      const ext = extname(filePath).toLowerCase();
       const mime = MIME_TYPES[ext] || "application/octet-stream";
-      return new HtxResp(200, mime, content.toString());
+      return new HtxResp(200, mime, content);
     } catch {
       return null;
     }
