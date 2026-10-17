@@ -93,6 +93,36 @@ describe("htx:each", () => {
     const result = resolveControlFlow(template, data);
     expect(result).toContain("Empty");
   });
+
+  // Nesting: an each inside an each pairs with its own close, and the inner
+  // item is in scope for the inner body.
+  test("resolves an each nested in an each", () => {
+    const data: DataContext = { qs: [{ t: "A", as: [{ x: "a1" }, { x: "a2" }] }, { t: "B", as: [{ x: "b1" }] }] };
+    const template = '<htx:each items="qs" as="q">[<htx:v>q.t</htx:v>:<htx:each items="q.as" as="a">(<htx:v>a.x</htx:v>)</htx:each>]</htx:each>';
+    const result = new ExpressionEngine().evaluate(resolveControlFlow(template, data), data);
+    expect(result).toBe("[A:(a1)(a2)][B:(b1)]");
+  });
+
+  test("an inner htx:empty belongs to the inner each", () => {
+    const data: DataContext = { qs: [{ t: "A", as: [] }, { t: "B", as: [{ x: "b1" }] }] };
+    const template = '<htx:each items="qs" as="q">[<htx:v>q.t</htx:v>:<htx:each items="q.as" as="a">(<htx:v>a.x</htx:v>)<htx:empty />none</htx:each>]</htx:each>';
+    const result = new ExpressionEngine().evaluate(resolveControlFlow(template, data), data);
+    expect(result).toBe("[A:none][B:(b1)]");
+  });
+
+  test("an htx:if inside a nested each sees the inner item", () => {
+    const data: DataContext = { qs: [{ as: [{ x: "a1", on: true }, { x: "a2", on: false }] }] };
+    const template = '<htx:each items="qs" as="q"><htx:each items="q.as" as="a"><i><htx:v>a.x</htx:v><htx:if test="a.on">*</htx:if></i></htx:each></htx:each>';
+    const result = new ExpressionEngine().evaluate(resolveControlFlow(template, data), data);
+    expect(result).toBe("<i>a1*</i><i>a2</i>");
+  });
+
+  test("sibling eaches stay separate", () => {
+    const data: DataContext = { a: [{ n: 1 }, { n: 2 }], b: [{ n: 3 }] };
+    const template = '<htx:each items="a" as="i"><htx:v>i.n</htx:v></htx:each>|<htx:each items="b" as="i"><htx:v>i.n</htx:v></htx:each>';
+    const result = new ExpressionEngine().evaluate(resolveControlFlow(template, data), data);
+    expect(result).toBe("12|3");
+  });
 });
 
 describe("htx:if/htx:else", () => {
@@ -124,6 +154,26 @@ describe("htx:if/htx:else", () => {
     const result = resolveControlFlow(template, data);
     expect(result).toContain("Welcome");
     expect(result).not.toContain("Sign in");
+  });
+
+  // Nesting: an if inside an if pairs with its own close, and an else
+  // belongs to the if it follows.
+  test("resolves an if nested in an if", () => {
+    const data: DataContext = { a: true, b: true, c: false };
+    const template = '<htx:if test="a">A<htx:if test="b">B</htx:if><htx:if test="c">C</htx:if>Z</htx:if>';
+    expect(resolveControlFlow(template, data)).toBe("ABZ");
+  });
+
+  test("a false outer if hides its nested ifs and takes its own else", () => {
+    const data: DataContext = { b: true, c: false };
+    const template = '<htx:if test="c">no<htx:if test="b">B</htx:if>no</htx:if><htx:else>E</htx:else>';
+    expect(resolveControlFlow(template, data)).toBe("E");
+  });
+
+  test("a nested if keeps its own else inside the outer else", () => {
+    const data: DataContext = { a: false, b: false };
+    const template = '<htx:if test="a">A</htx:if><htx:else>[<htx:if test="b">B</htx:if><htx:else>not b</htx:else>]</htx:else>';
+    expect(resolveControlFlow(template, data)).toBe("[not b]");
   });
 });
 
