@@ -64,9 +64,9 @@ describe("Expression evaluation", () => {
   });
 
   test("pipe json serializes object", () => {
-    // JSON output is HTML-escaped by default (htx:v escapes &<>")
+    // JSON output is HTML-escaped by default (htx:v escapes &<>"{)
     const result = engine.evaluate('<div data-config="<htx:v>config | json</htx:v>"></div>', { config: { a: 1 } });
-    expect(result).toContain("{&quot;a&quot;:1}");
+    expect(result).toContain("&#123;&quot;a&quot;:1}");
   });
 
   test("pipe json raw outputs unescaped", () => {

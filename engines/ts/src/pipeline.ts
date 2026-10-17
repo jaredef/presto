@@ -6,7 +6,7 @@ import { ExpressionEngine } from "./expressions";
 import { IncludeResolver } from "./directives/include";
 import { ComponentResolver } from "./directives/component";
 import { extractPageScripts, injectScripts, finalizeScripts } from "./directives/script";
-import { resolveLet } from "./directives/let";
+import { resolveLet, resolveDeferredLets } from "./directives/let";
 import { resolveData } from "./directives/data";
 import { resolveGrants } from "./directives/grant";
 import { resolveActions } from "./directives/action";
@@ -44,6 +44,7 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
 
   // Stage 10: htx:data resolution
   content = resolveData(content, ctx.data, ctx.adapter);
+  resolveDeferredLets(ctx.data);
 
   // Stage 11: htx:grant materialization
   content = await resolveGrants(content, ctx.data, ctx.secret);

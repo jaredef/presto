@@ -100,12 +100,15 @@ export class ExpressionEngine {
     return true;
   }
 
+  // { is encoded too: later pipeline passes evaluate {htx:...} again, so printed
+  // data (a form value, a query param) must not be able to form an expression.
   escapeHtml(str: string): string {
     return str
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/"/g, "&quot;")
+      .replace(/\{/g, "&#123;");
   }
 
   valueToString(value: unknown): string {
