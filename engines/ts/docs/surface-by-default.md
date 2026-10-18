@@ -65,7 +65,7 @@ Add htmx attributes to the HTML elements that need dynamic behavior. The server 
 <div id="results"></div>
 ```
 
-A request carrying `HX-Request` is rendered without the root `_layout.htx`, so it returns the page body alone. htmx sends that header on its history-restore refetch too, which would put a page without its layout back into the browser; set `historyRestoreAsHxRequest: false` in `htmx-config` so a history miss fetches the full page.
+A request carrying `HX-Request` is rendered without the root `_layout.htx`, so it returns the page body alone. htmx sends that header on its history-restore refetch too, which would put a page without its layout back into the browser; set `historyRestoreAsHxRequest: false` in `htmx-config` so a history miss fetches the full page. To answer with only the swapped region, wrap it in `<htx:fragment name="results">` where `results` is the target element's id: when `HX-Target` names it, the response is exactly that region of the full page. Template responses declare `Vary: HX-Request, HX-Target`.
 
 **Cost:** 14KB library. Marginal visibility reduction.
 **Preserved:** Server authority, cacheability, complete representations, statelessness.

@@ -23,12 +23,33 @@ You generate .htx templates. The engine resolves them into complete HTML. You de
 | htx:layout | `<htx:layout none />` or `<htx:layout src="path" />` | Layout override |
 | htx:raw | `<htx:raw>...</htx:raw>` | No processing |
 | htx:script | `<htx:script>...</htx:script>` | Client-side behavior (scoped to component) |
+| htx:fragment | `<htx:fragment name="list"><div id="list">...</div></htx:fragment>` | Region an htmx request can ask for by `HX-Target` |
 
 ## Pipes
 
-Use with htx:v: `<htx:v>name | uppercase</htx:v>`
+Use with htx:v, {htx:} and htx:if: `<htx:v>name | uppercase</htx:v>`. Pipes chain left to right and take literal arguments after colons: `<htx:v>n | plus:1 | pad:2</htx:v>`.
 
-Available: uppercase, lowercase, capitalize, trim, length, json
+Available: uppercase, lowercase, capitalize, trim, length, json, plus:n, minus:n, pad:width, default:'text', plural:'one':'many'. An unknown pipe or a wrong argument is an error, not a silent pass-through.
+
+## Conditions
+
+`htx:if test` takes a lone value (truthiness), a comparison, or a combination:
+
+- `==` and `!=`; ordering is written as words, `lt le gt ge` (a `>` would end the tag)
+- `and`, `or`, `not`
+- literals: `'text'`, numbers, `true`, `false`
+- numbers and numeric text compare as numbers; everything else compares as text; a missing value is `''`
+
+```html
+<a href="{htx:f.href}"<htx:if test="f.key == query.service"> aria-current="true"</htx:if>>...</a>
+<htx:if test="rest and not query.show">Show <htx:v>rest | length</htx:v> more</htx:if>
+```
+
+## Data
+
+Values written as `{htx:...}` inside `where` are bound as parameters, never pasted into the query. A later htx:data can use an earlier one's result: `where="service = '{htx:post.0.service}' AND slug != '{htx:params.slug}'"`. Add `required` when the page cannot exist without a result: an empty result answers 404 with `_404.htx`.
+
+Files and folders whose names begin with `_` are never URLs (`_layout.htx`, `_404.htx`, `_partials/`); include them freely.
 
 ## Components
 
@@ -52,7 +73,7 @@ Important: the component must be the first HTML element in its file. Do not star
 
 **Detail page (dynamic route [slug].htx):**
 ```html
-<htx:data type="post" where="slug='{htx:params.slug}'" limit="1" as="items" />
+<htx:data type="post" where="slug='{htx:params.slug}'" as="items" required />
 <htx:each items="items" as="post">
   <h1><htx:v>post.title</htx:v></h1>
   <htx:v raw>post.body</htx:v>
@@ -115,6 +136,6 @@ Style tokens are defined in the style guide (styles.json). Use `{htx:styles.toke
 5. HTML is escaped by default. Use htx:v raw only for trusted HTML content
 6. Scripts in <script> tags are opaque — the engine does not process them
 7. htx:script blocks are server-mediated — expressions resolve inside them
-8. The file path is the URL: pages/blog/[slug].htx serves /blog/:slug
+8. The file path is the URL: pages/blog/[slug].htx serves /blog/:slug. Paths with a segment starting with `_` are not URLs
 9. ALWAYS use style guide tokens for CSS classes: class="{htx:styles.token-name}". Never write raw Tailwind/CSS utility classes. The style guide is the shared vocabulary between you and the user.
 10. Style tokens compose: class="{htx:styles.section} {htx:styles.bg-dark}" applies both tokens
