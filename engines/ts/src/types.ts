@@ -3,6 +3,24 @@
 
 // === Request / Response ===
 
+// Malformed htxlang (an expression outside the grammar, an unknown pipe): raised before
+// anything is emitted (K5, .plans/htxlang-closure-plan.md).
+export class TemplateError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TemplateError";
+  }
+}
+
+// Thrown during resolution when the representation does not exist (htx:data required
+// with no result). The engine answers 404 with the _404.htx representation.
+export class NotFound extends Error {
+  constructor(message = "Not found") {
+    super(message);
+    this.name = "NotFound";
+  }
+}
+
 export interface HtxRequest {
   method: string;
   path: string;
@@ -82,7 +100,9 @@ export interface ContentRecord {
 export interface ContentAdapter {
   query(options: {
     type: string;
+    // Values from {htx:} expressions arrive as ? placeholders in where, bound in order from params.
     where?: string;
+    params?: unknown[];
     order?: string;
     limit?: number;
     offset?: number;

@@ -27,6 +27,7 @@ export class SqliteAdapter implements ContentAdapter {
   query(options: {
     type: string;
     where?: string;
+    params?: unknown[];
     order?: string;
     limit?: number;
     offset?: number;
@@ -35,12 +36,11 @@ export class SqliteAdapter implements ContentAdapter {
     this.ensureTable(safeName);
 
     let sql = `SELECT * FROM [${safeName}]`;
-    const params: unknown[] = [];
+    // where is authored template text; every value that came from an expression is a ?
+    // placeholder bound from options.params, never spliced into the SQL.
+    const params: unknown[] = [...(options.params ?? [])];
 
     if (options.where) {
-      // The where clause comes from template authors (trusted source representation)
-      // but may contain resolved user input. Use as-is for literal template expressions,
-      // which is safe for author-controlled strings like "status = 'published'"
       sql += ` WHERE ${options.where}`;
     }
 

@@ -2,7 +2,8 @@
 // C1/C2: Input HTML + htx: directives → Output pure HTML, no htx: remaining
 
 import type { PipelineContext } from "./types";
-import { ExpressionEngine } from "./expressions";
+import { ExpressionEngine, ValueTable } from "./expressions";
+import { markFragments, selectFragment } from "./directives/fragment";
 import { IncludeResolver } from "./directives/include";
 import { ComponentResolver } from "./directives/component";
 import { extractPageScripts, injectScripts, finalizeScripts } from "./directives/script";
@@ -24,6 +25,8 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
   const componentResolver = new ComponentResolver(pathGuard, ctx.templateRoot);
 
   let content = ctx.data.__templateContent as string;
+  const values = new ValueTable();
+  values.attach(ctx.data);
 
   // Stage 5: Pre-layout template processors (module extension hook)
   for (const tp of ctx.registry.preProcessors) {
@@ -38,6 +41,9 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
 
   // Stage 8: Page-level htx:script extraction
   content = extractPageScripts(content, ctx.scriptCollector);
+
+  // F4: mark htx:fragment regions (after includes and components, so theirs count too)
+  content = markFragments(content);
 
   // Stage 9: htx:let binding
   content = resolveLet(content, ctx.data);
@@ -64,11 +70,13 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
   // Stage 15b: Extract layout directive AFTER expression eval
   const { directive: layoutDirective, content: contentAfterLayout } = extractLayoutDirective(content);
   content = contentAfterLayout;
+  if (layoutDirective?.src) layoutDirective.src = values.restore(layoutDirective.src);
 
   // Stage 16: Strip remaining htx: directives
   content = stripDirectives(content);
 
-  // Stage 17: Post-layout template processors (module extension hook)
+  // Stage 17: Post-layout template processors (module extension hook).
+  // Resolved values are still placeholders here; they are restored at stage 22.
   for (const tp of ctx.registry.postProcessors) {
     content = tp.process(content, ctx.data);
   }
@@ -91,6 +99,11 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
   // Stage 22: Replace PRESTO:SCRIPT placeholders with <script>, strip <htx:raw> wrappers
   content = finalizeScripts(content);
   content = stripRawWrappers(content);
+  // An htmx request whose HX-Target names a fragment gets that region only.
+  const target = ctx.request.hxRequest ? ctx.request.headers["hx-target"] : undefined;
+  content = selectFragment(content, target);
+  // Values last: each is written once and no stage reads it as template.
+  content = values.restore(content);
 
   return content;
 }

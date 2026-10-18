@@ -155,8 +155,7 @@ function resolveIf(content: string, data: DataContext): string {
 }
 
 function branch(testPath: string, ifBody: string, elseBody: string | undefined, data: DataContext): string {
-  const value = expr.resolvePath(testPath, data);
-  if (expr.isTruthy(value)) {
+  if (expr.test(testPath, data)) {
     let result = expr.evaluate(ifBody, data);
     result = resolveControlFlow(result, data);
     return result;

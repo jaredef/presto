@@ -33,6 +33,10 @@ beforeAll(() => {
   writeFileSync(join(t, "_layout.htx"), "<html><head><title><htx:v>title</htx:v></title></head><body>__content__</body></html>");
   writeFileSync(join(t, "echo.htx"), '<p><htx:v>query.q</htx:v></p><input value="{htx:query.q}"><htx:let said="You said {htx:query.q}"/><b><htx:v>said</htx:v></b>');
   writeFileSync(join(t, "posts", "[slug].htx"), `<htx:data type="post" where="slug = '{htx:params.slug}'" as="post"/><htx:let title="{htx:post.0.title} | Blog"/><h1><htx:v>post.0.title</htx:v></h1>`);
+  writeFileSync(join(t, "branch.htx"), "<htx:if test=\"query.q\"><i><htx:v>query.q</htx:v></i></htx:if><htx:each items=\"rows\" as=\"r\"><u>{htx:r}</u></htx:each><htx:let rows=\"\"/>");
+  writeFileSync(join(t, "rawval.htx"), "<div><htx:v raw>query.html</htx:v></div>");
+  writeFileSync(join(t, "_alt.htx"), "<main data-alt>__content__</main>");
+  writeFileSync(join(t, "dynlayout.htx"), "<htx:layout src=\"{htx:query.l}\"/><p>in</p>");
   engine = new PrestoEngine({ templateDir: t, publicDir: join(ROOT, "public"), secret: "reflect-test-secret", adapter });
 });
 
@@ -42,27 +46,27 @@ describe("reflected {htx:} stays literal", () => {
   test("a query value is printed, not evaluated", async () => {
     const body = String((await engine.handle(get("/echo", { q: "{htx:request.path}", secret: "s3cret" }))).body);
     expect(body).not.toContain("/echo");
-    expect(body).toContain("<p>&#123;htx:request.path}</p>");
-    expect(body).toContain('value="&#123;htx:request.path}"');
-    expect(body).toContain("<b>You said &#123;htx:request.path}</b>");
+    expect(body).toContain("<p>{htx:request.path}</p>");
+    expect(body).toContain('value="{htx:request.path}"');
+    expect(body).toContain("<b>You said {htx:request.path}</b>");
   });
 
   test("two printed halves cannot join into an expression", async () => {
     const body = String((await engine.handle(get("/echo", { q: "{", secret: "s3cret" }))).body);
-    expect(body).toContain("<p>&#123;</p>");
+    expect(body).toContain("<p>{</p>");
   });
 
   test("record content carrying {htx:} is printed literally", async () => {
     const body = String((await engine.handle(get("/posts/hello", { secret: "s3cret" }))).body);
     expect(body).not.toContain("s3cret");
-    expect(body).toContain("<h1>Hello &#123;htx:query.secret}</h1>");
+    expect(body).toContain("<h1>Hello {htx:query.secret}</h1>");
   });
 });
 
 describe("htx:let expressions", () => {
   test("a let can name data loaded later on the page", async () => {
     const body = String((await engine.handle(get("/posts/hello"))).body);
-    expect(body).toContain("<title>Hello &#123;htx:query.secret} | Blog</title>");
+    expect(body).toContain("<title>Hello {htx:query.secret} | Blog</title>");
   });
 
   test("paths already in context resolve at once; others after htx:data", () => {
@@ -79,5 +83,32 @@ describe("htx:let expressions", () => {
     const data: DataContext = { query: { q: "term" } };
     resolveLet('<htx:let query="{htx:query.q}"/>', data);
     expect(data.query).toBe("term");
+  });
+});
+
+describe("single emission (F7)", () => {
+  const SLOT = /\uE000|\uE001/;
+
+  test("a value printed inside an htx:if branch is not evaluated again", async () => {
+    const body = String((await engine.handle(get("/branch", { q: "{htx:request.path}" }))).body);
+    expect(body).toContain("<i>{htx:request.path}</i>");
+    expect(body).not.toContain("/branch");
+  });
+
+  test("a raw value carrying directives is output, not resolved", async () => {
+    const body = String((await engine.handle(get("/rawval", { html: "<htx:include src=\"/_alt.htx\"/><htx:v>request.path</htx:v>" }))).body);
+    expect(body).toContain("<div><htx:include src=\"/_alt.htx\"/><htx:v>request.path</htx:v></div>");
+  });
+
+  test("htx:layout src may come from an expression", async () => {
+    const body = String((await engine.handle(get("/dynlayout", { l: "/_alt.htx" }))).body);
+    expect(body).toContain("<main data-alt>");
+    expect(body).toContain("<p>in</p>");
+  });
+
+  test("no value placeholder reaches the output", async () => {
+    for (const [p, q] of [["/echo", { q: "x" }], ["/posts/hello", {}], ["/branch", { q: "y" }]] as const) {
+      expect(String((await engine.handle(get(p, q))).body)).not.toMatch(SLOT);
+    }
   });
 });

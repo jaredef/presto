@@ -8,8 +8,8 @@ import { executePipeline } from "./pipeline";
 import { EngineRegistry } from "./modules/registry";
 import { executeMiddleware } from "./modules/middleware";
 import { ActionTokenService, ChannelTokenService } from "./security/tokens";
-import type { EngineConfig, HtxRequest, HtxResponse, DataContext, PipelineContext } from "./types";
-import { HtxResponse as HtxResp } from "./types";
+import type { EngineConfig, HtxRequest, HtxResponse, DataContext, PipelineContext, RouteMatch } from "./types";
+import { HtxResponse as HtxResp, NotFound } from "./types";
 
 const MIME_TYPES: Record<string, string> = {
   ".html": "text/html",
@@ -98,50 +98,9 @@ export class PrestoEngine {
 
       // Route to template
       const match = this.router.resolve(request.path);
-      if (!match) return HtxResp.notFound();
+      if (!match) return await this.notFound(request);
 
-      // Build data context
-      const data: DataContext = {
-        params: match.params,
-        query: request.query,
-        auth: request.auth,
-        request: {
-          method: request.method,
-          path: request.path,
-        },
-        $fingerprint: computeFingerprint(request),
-      };
-
-      // Stage 4: Context provider injection
-      for (const cp of this.registry.contextProviders) {
-        try {
-          const provided = cp.resolve(request);
-          Object.assign(data, provided);
-        } catch (err) {
-          console.warn(`Context provider ${cp.name()} failed:`, err);
-        }
-      }
-
-      // Read template
-      const templateContent = readFileSync(match.filePath, "utf-8");
-      data.__templateContent = templateContent;
-
-      // Build pipeline context
-      const ctx: PipelineContext = {
-        request,
-        data,
-        filePath: match.filePath,
-        templateRoot: this.config.templateDir,
-        publicRoot: this.config.publicDir,
-        secret: this.config.secret,
-        adapter: this.config.adapter,
-        scriptCollector: [],
-        registry: this.registry,
-      };
-
-      // Execute 22-stage pipeline
-      const html = await executePipeline(ctx);
-      const finalResp = HtxResp.html(html);
+      const finalResp = await this.render(request, match);
 
       // Merge middleware-added headers onto the final response
       if (middlewareShortCircuit) {
@@ -152,8 +111,67 @@ export class PrestoEngine {
 
       return finalResp;
     } catch (err) {
+      if (err instanceof NotFound) return await this.notFound(request);
       console.error("Pipeline error:", err);
       return HtxResp.html("<h1>500 Internal Server Error</h1>", 500);
+    }
+  }
+
+  // Resolve a template into a response. The body depends on HX-Request (root layout skip)
+  // and HX-Target (fragments), so both are declared in Vary (K6).
+  private async render(request: HtxRequest, match: RouteMatch, status = 200): Promise<HtxResp> {
+    const data: DataContext = {
+      params: match.params,
+      query: request.query,
+      auth: request.auth,
+      request: {
+        method: request.method,
+        path: request.path,
+      },
+      $fingerprint: computeFingerprint(request),
+    };
+
+    // Stage 4: Context provider injection
+    for (const cp of this.registry.contextProviders) {
+      try {
+        const provided = cp.resolve(request);
+        Object.assign(data, provided);
+      } catch (err) {
+        console.warn(`Context provider ${cp.name()} failed:`, err);
+      }
+    }
+
+    const templateContent = readFileSync(match.filePath, "utf-8");
+    data.__templateContent = templateContent;
+
+    const ctx: PipelineContext = {
+      request,
+      data,
+      filePath: match.filePath,
+      templateRoot: this.config.templateDir,
+      publicRoot: this.config.publicDir,
+      secret: this.config.secret,
+      adapter: this.config.adapter,
+      scriptCollector: [],
+      registry: this.registry,
+    };
+
+    const html = await executePipeline(ctx);
+    const resp = HtxResp.html(html, status);
+    resp.headers.Vary = "HX-Request, HX-Target";
+    return resp;
+  }
+
+  // F5: the not-found representation is _404.htx when the site has one (K7: never routable
+  // itself), else the plain one. A _404.htx that is itself not found falls back too.
+  private async notFound(request: HtxRequest): Promise<HtxResp> {
+    const filePath = join(this.config.templateDir, "_404.htx");
+    if (!existsSync(filePath)) return HtxResp.notFound();
+    try {
+      return await this.render(request, { filePath, params: {} }, 404);
+    } catch (err) {
+      if (!(err instanceof NotFound)) console.error("Pipeline error:", err);
+      return HtxResp.notFound();
     }
   }
 

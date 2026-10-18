@@ -11,6 +11,10 @@ export class Router {
   resolve(urlPath: string): RouteMatch | null {
     const cleanPath = urlPath.replace(/^\/+|\/+$/g, "") || "index";
 
+    // F6: a segment beginning with _ is engine-internal (_layout.htx, _404.htx, _partials/).
+    // Includes and layouts still reach those files; URLs never do.
+    if (cleanPath.split("/").some((s) => s.startsWith("_"))) return null;
+
     // 1. Static: templateDir + path + ".htx"
     const staticPath = join(this.templateRoot, cleanPath + ".htx");
     if (existsSync(staticPath)) {
