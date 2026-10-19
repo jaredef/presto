@@ -16,6 +16,7 @@ import { resolveControlFlow } from "./directives/control-flow";
 import { extractLayoutDirective, wrapLayout } from "./directives/layout";
 import { stripDirectives } from "./directives/strip";
 import { stripRawWrappers } from "./directives/strip";
+import { stripComments } from "./directives/comments";
 import { PathGuard } from "./security/path-guard";
 
 export async function executePipeline(ctx: PipelineContext): Promise<string> {
@@ -98,10 +99,11 @@ export async function executePipeline(ctx: PipelineContext): Promise<string> {
 
   // Stage 22: Replace PRESTO:SCRIPT placeholders with <script>, strip <htx:raw> wrappers
   content = finalizeScripts(content);
-  content = stripRawWrappers(content);
   // An htmx request whose HX-Target names a fragment gets that region only.
   const target = ctx.request.hxRequest ? ctx.request.headers["hx-target"] : undefined;
   content = selectFragment(content, target);
+  content = stripComments(content);
+  content = stripRawWrappers(content);
   // Values last: each is written once and no stage reads it as template.
   content = values.restore(content);
 
